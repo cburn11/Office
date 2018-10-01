@@ -1,0 +1,798 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+// 
+// typelib filename: MDIVWCTL.DLL
+
+[
+	uuid(A5EDEDF4-2BBC-45F3-822B-E60C278A1A79),
+	version(12.0),
+	helpstring("Microsoft Office Document Imaging 12.0 Type Library"),
+	custom(DE77BA64-517C-11D1-A2DA-0000F8773CE9, 100663657),
+	custom(DE77BA63-517C-11D1-A2DA-0000F8773CE9, 1161917223),
+	custom(DE77BA65-517C-11D1-A2DA-0000F8773CE9, "Created by MIDL version 6.00.0361 at Thu Oct 26 19:47:02 2006
+	")
+
+]
+library MODI
+{
+	// TLib :     // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+	importlib("stdole2.tlb");
+
+	// Forward declare all types defined in this typelib
+	interface IMiFont;
+	interface IMiRect;
+	interface IMiRects;
+	interface IWord;
+	interface IWords;
+	interface ILayout;
+	interface IImage;
+	interface IImages;
+	interface IDocument;
+	dispinterface _IDocumentEvents;
+	dispinterface _IImageEvents;
+	interface IMiSelectRect;
+	interface IMiSelectRects;
+	interface IMiSelectableItem;
+	interface IMiSelectableImage;
+	interface IMiSearchCallback;
+	interface IMiDocView;
+	dispinterface _IMiDocViewEvents;
+	interface IMiDocSearch;
+
+
+
+
+
+
+	typedef enum {
+		miFFamily_Helvetica = 1,
+		miFFamily_Times = 2,
+		miFFamily_Century = 3,
+		miFFamily_TimesCentury = 4,
+		miFFamily_HelveticaCentury = 5,
+		miFFamily_DEFAULT = 6
+	} MiFONT_FAMILY;
+
+
+	typedef enum {
+		miFFace_ROMAN = 1,
+		miFFace_ITALIC = 2,
+		miFFace_BOLD = 3,
+		miFFace_BOLD_ITALIC = 4
+	} MiFONT_FACE_STYLE;
+
+
+	typedef enum {
+		miFSerifSANS = 1,
+		miFSerifTHIN = 2,
+		miFSerifSQ = 3,
+		miFSerifRND = 4,
+		miFSerifSTYLE_UNKNOWN = 5
+	} MiFONT_SERIF_STYLE;
+
+
+	typedef enum {
+		miTHUMB_SIZE_TINY = 0,
+		miTHUMB_SIZE_SMALL = 1,
+		miTHUMB_SIZE_MEDIUM = 2,
+		miTHUMB_SIZE_LARGE = 3,
+		miTHUMB_SIZE_MAXIMUM = 3
+	} MiTHUMBNAIL_SIZE;
+
+
+	typedef enum {
+		miCOMP_LEVEL_LOW = 0,
+		miCOMP_LEVEL_MEDIUM = 1,
+		miCOMP_LEVEL_HIGH = 2
+	} MiCOMP_LEVEL;
+
+
+	typedef enum {
+		miCOMP_UNKNOWN = 0,
+		miCOMP_TIFF_NONE = 1,
+		miCOMP_TIFF_CCITT1D = 2,
+		miCOMP_TIFF_CCITT3 = 3,
+		miCOMP_TIFF_CCITT4 = 4,
+		miCOMP_TIFF_LZW = 5,
+		miCOMP_TIFF_JPEG6 = 6,
+		miCOMP_TIFF_JPEG = 7,
+		miCOMP_TIFF_PACK = 32773,
+		miCOMP_MODI_BLC = 34718,
+		miCOMP_MODI_VECTOR = 34719,
+		miCOMP_MODI_PTC = 34720
+	} MiCOMP_TYPE;
+
+
+	typedef enum {
+		miFILE_FORMAT_TIFF = 1,
+		miFILE_FORMAT_TIFF_LOSSLESS = 2,
+		miFILE_FORMAT_MDI = 4,
+		miFILE_FORMAT_DEFAULTVALUE = 0xffffffff
+	} MiFILE_FORMAT;
+
+
+	typedef enum {
+		miPRINT_ACTUALSIZE = 0,
+		miPRINT_PAGE = 1
+	} MiPRINT_FITMODES;
+
+
+	typedef enum {
+		miLANG_CHINESE_SIMPLIFIED = 2052,
+		miLANG_CHINESE_TRADITIONAL = 1028,
+		miLANG_CZECH = 5,
+		miLANG_DANISH = 6,
+		miLANG_DUTCH = 19,
+		miLANG_ENGLISH = 9,
+		miLANG_FINNISH = 11,
+		miLANG_FRENCH = 12,
+		miLANG_GERMAN = 7,
+		miLANG_GREEK = 8,
+		miLANG_HUNGARIAN = 14,
+		miLANG_ITALIAN = 16,
+		miLANG_JAPANESE = 17,
+		miLANG_KOREAN = 18,
+		miLANG_NORWEGIAN = 20,
+		miLANG_POLISH = 21,
+		miLANG_PORTUGUESE = 22,
+		miLANG_RUSSIAN = 25,
+		miLANG_SPANISH = 10,
+		miLANG_SWEDISH = 29,
+		miLANG_TURKISH = 31,
+		miLANG_SYSDEFAULT = 2048
+	} MiLANGUAGES;
+
+
+	typedef enum {
+		miASTATE_NONE = 0,
+		miASTATE_PAN = 1,
+		miASTATE_ZOOM = 2,
+		miASTATE_AnntSELECT = 3,
+		miASTATE_HIDDEN = 4,
+		miASTATE_SELECT = 5
+	} MiActionState;
+
+
+	typedef enum {
+		miDOCVIEWMODE_CONTINOUSPAGEVIEW = 0,
+		miDOCVIEWMODE_SINGLEPAGEVIEW = 1,
+		miDOCVIEWMODE_TWOCOLUMNS_CONTINOUSPAGEVIEW = 4
+	} MiDocviewMode;
+
+
+	typedef enum {
+		miVIEWLAYER_RICHINK = 0
+	} MiVIEWLAYER;
+
+
+	typedef enum {
+		miFree = 0,
+		miByWidth = 1,
+		miByHeight = 2,
+		miByWindow = 3,
+		miByTextWidth = 4
+	} MiFITMODE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	[
+		odl,
+		uuid(1FFC9A7B-7606-4C97-8119-78673E9D4821),
+		helpstring("IMiFont Interface"),
+		dual,
+		oleautomation
+	]
+	interface IMiFont : IDispatch {
+		[id(0x00000001), propget, helpstring("property Family")]
+		HRESULT Family([out, retval] MiFONT_FAMILY* pVal);
+		[id(0x00000003), propget, helpstring("property FaceStyle")]
+		HRESULT FaceStyle([out, retval] MiFONT_FACE_STYLE* pVal);
+		[id(0x00000004), propget, helpstring("property SerifStyle")]
+		HRESULT SerifStyle([out, retval] MiFONT_SERIF_STYLE* pVal);
+		[id(0x00000005), propget, helpstring("property FontSize")]
+		HRESULT FontSize([out, retval] short* pVal);
+	};
+
+	[
+		odl,
+		uuid(87D6FB47-7CFA-4DB3-82CD-E8DCC5BDA7AB),
+		helpstring("IMiRect Interface"),
+		dual,
+		oleautomation
+	]
+	interface IMiRect : IDispatch {
+		[id(0x00000001), propget, helpstring("property Top")]
+		HRESULT Top([out, retval] long* pVal);
+		[id(0x00000002), propget, helpstring("property Left")]
+		HRESULT Left([out, retval] long* pVal);
+		[id(0x00000003), propget, helpstring("property Right")]
+		HRESULT Right([out, retval] long* pVal);
+		[id(0x00000004), propget, helpstring("property Bottom")]
+		HRESULT Bottom([out, retval] long* pVal);
+	};
+
+	[
+		odl,
+		uuid(895C88A9-8598-44CC-91C4-8010AE2475EB),
+		helpstring("IMiRects Interface"),
+		dual,
+		oleautomation
+	]
+	interface IMiRects : IDispatch {
+		[id(0x00000001), propget, helpstring("property Count")]
+		HRESULT Count([out, retval] long* pVal);
+		[id(0xfffffffc), propget, helpstring("property _NewEnum")]
+		HRESULT _NewEnum([out, retval] IUnknown** pVal);
+		[id(00000000), propget, helpstring("property Item")]
+		HRESULT Item(
+			[in] long Index,
+			[out, retval] IDispatch** pVal);
+	};
+
+	[
+		odl,
+		uuid(5612275B-B4F1-42AF-B696-360D40DF041D),
+		helpstring("IWord Interface"),
+		dual,
+		oleautomation
+	]
+	interface IWord : IDispatch {
+		[id(0x00000001), propget, helpstring("property RecognitionConfidence")]
+		HRESULT RecognitionConfidence([out, retval] short* pVal);
+		[id(0x00000002), propget, helpstring("property FontId")]
+		HRESULT FontId([out, retval] long* pVal);
+		[id(0x00000003), propget, helpstring("property LineId")]
+		HRESULT LineId([out, retval] long* pVal);
+		[id(0x00000004), propget, helpstring("property RegionId")]
+		HRESULT RegionId([out, retval] long* pVal);
+		[id(0x00000006), propget, helpstring("property Text")]
+		HRESULT Text([out, retval] BSTR* pVal);
+		[id(0x00000007), propget, helpstring("property Font")]
+		HRESULT Font([out, retval] IMiFont** pVal);
+		[id(0x00000008), propget, helpstring("property Id")]
+		HRESULT Id([out, retval] long* pVal);
+		[id(0x00000009), propget, helpstring("property Rects")]
+		HRESULT Rects([out, retval] IMiRects** ppVal);
+	};
+
+	[
+		odl,
+		uuid(D8363824-4B07-423B-8803-49B470434F3D),
+		helpstring("IWords Interface"),
+		dual,
+		oleautomation
+	]
+	interface IWords : IDispatch {
+		[id(0x00000001), propget, helpstring("property Count")]
+		HRESULT Count([out, retval] long* pVal);
+		[id(0xfffffffc), propget, helpstring("property _NewEnum")]
+		HRESULT _NewEnum([out, retval] IUnknown** pVal);
+		[id(00000000), propget, helpstring("property Item")]
+		HRESULT Item(
+			[in] long Index,
+			[out, retval] IDispatch** pVal);
+	};
+
+	[
+		odl,
+		uuid(C300C846-A3FD-4A5B-AD65-4A6AB46B7821),
+		helpstring("ILayout Interface"),
+		dual,
+		oleautomation
+	]
+	interface ILayout : IDispatch {
+		[id(0x00000001), propget, helpstring("property Language")]
+		HRESULT Language([out, retval] long* pVal);
+		[id(0x00000002), propget, helpstring("property NumChars")]
+		HRESULT NumChars([out, retval] long* pVal);
+		[id(0x00000003), propget, helpstring("property NumWords")]
+		HRESULT NumWords([out, retval] long* pVal);
+		[id(0x00000004), propget, helpstring("property NumFonts")]
+		HRESULT NumFonts([out, retval] long* pVal);
+		[id(0x00000005), propget, helpstring("property Text")]
+		HRESULT Text([out, retval] BSTR* pVal);
+		[id(0x00000006), propget, helpstring("property Words")]
+		HRESULT Words([out, retval] IWords** pVal);
+	};
+
+	[
+		odl,
+		uuid(AC0D48A6-886D-4EB5-A8A1-093D60B9A84A),
+		helpstring("IImage Interface"),
+		dual,
+		oleautomation
+	]
+	interface IImage : IDispatch {
+		[id(0x00000001), propget, helpstring("property Layout")]
+		HRESULT Layout([out, retval] ILayout** pVal);
+		[id(0x00000002), propget, helpstring("property PixelWidth")]
+		HRESULT PixelWidth([out, retval] long* pVal);
+		[id(0x00000003), propget, helpstring("property PixelHeight")]
+		HRESULT PixelHeight([out, retval] long* pVal);
+		[id(0x00000004), propget, helpstring("property XDPI")]
+		HRESULT XDPI([out, retval] long* pVal);
+		[id(0x00000005), propget, helpstring("property YDPI")]
+		HRESULT YDPI([out, retval] long* pVal);
+		[id(0x00000006), propget, helpstring("property BitsPerPixel")]
+		HRESULT BitsPerPixel([out, retval] long* pVal);
+		[id(0x00000007), propget, helpstring("property Thumbnail")]
+		HRESULT Thumbnail(
+			[in, optional, defaultvalue(3)] MiTHUMBNAIL_SIZE ThumbSize,
+			[out, retval] IPictureDisp** pVal);
+		[id(0x00000008), propget, helpstring("property Picture")]
+		HRESULT Picture([out, retval] IPictureDisp** pVal);
+		[id(0x00000009), propget, helpstring("property Compression")]
+		HRESULT Compression([out, retval] MiCOMP_TYPE* pVal);
+		[id(0x0000000a), helpstring("method OCR")]
+		HRESULT OCR(
+			[in, optional, defaultvalue(2048)] MiLANGUAGES LangId,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL OCROrientImage,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL OCRStraightenImage);
+		[id(0x0000000b), helpstring("method Rotate")]
+		HRESULT Rotate([in] long Angle);
+	};
+
+	[
+		odl,
+		uuid(77096557-54CA-45C8-81C9-E70C2ABAA0FB),
+		helpstring("IImages Interface"),
+		dual,
+		oleautomation
+	]
+	interface IImages : IDispatch {
+		[id(0x00000001), propget, helpstring("property Count")]
+		HRESULT Count([out, retval] long* pVal);
+		[id(0x00000002), helpstring("method Add")]
+		HRESULT Add(
+			[in] IDispatch* Page,
+			[in] IDispatch* BeforePage);
+		[id(0xfffffffc), propget, helpstring("property _NewEnum")]
+		HRESULT _NewEnum([out, retval] IUnknown** pVal);
+		[id(00000000), propget, helpstring("property Item")]
+		HRESULT Item(
+			[in] long Index,
+			[out, retval] IDispatch** pVal);
+		[id(0x00000005), helpstring("method Remove")]
+		HRESULT Remove([in] IDispatch* Page);
+	};
+
+	[
+		odl,
+		uuid(D4073843-A58A-469A-A8E2-CFF3FF77EE4E),
+		helpstring("IDocument Interface"),
+		dual,
+		oleautomation
+	]
+	interface IDocument : IDispatch {
+		[id(0x00000002), helpstring("method Save")]
+		HRESULT Save();
+		[id(0x00000003), helpstring("method Close")]
+		HRESULT Close([in, optional, defaultvalue(0)] VARIANT_BOOL SaveChanges);
+		[id(0x00000004), helpstring("method SaveAs")]
+		HRESULT SaveAs(
+			[in] BSTR FileName,
+			[in, optional, defaultvalue(-1)] MiFILE_FORMAT FileFormat,
+			[in, optional, defaultvalue(1)] MiCOMP_LEVEL CompLevel);
+		[id(0x00000005), propget, helpstring("property Images")]
+		HRESULT Images([out, retval] IImages** pVal);
+		[id(0x00000006), propget, helpstring("property BuiltInDocumentProperties")]
+		HRESULT BuiltInDocumentProperties([out, retval] IDispatch** pVal);
+		[id(0x00000007), propget, helpstring("property CustomDocumentProperties")]
+		HRESULT CustomDocumentProperties([out, retval] IDispatch** pVal);
+		[id(0x00000008), helpstring("method Create")]
+		HRESULT Create([in, optional, defaultvalue("")] BSTR FileOpen);
+		[id(0x00000009), propget, helpstring("property Dirty")]
+		HRESULT Dirty([out, retval] VARIANT_BOOL* pVal);
+		[id(0x0000000a), helpstring("method OCR")]
+		HRESULT OCR(
+			[in, optional, defaultvalue(2048)] MiLANGUAGES LangId,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL OCROrientImage,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL OCRStraightenImage);
+		[id(0x0000000b), helpstring("method PrintOut")]
+		HRESULT PrintOut(
+			[in, optional, defaultvalue(0)] long From,
+			[in, optional, defaultvalue(-1)] long To,
+			[in, optional, defaultvalue(1)] long Copies,
+			[in, optional, defaultvalue("")] BSTR PrinterName,
+			[in, optional, defaultvalue("")] BSTR PrintToFileName,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL PrintAnnotation,
+			[in, optional, defaultvalue(1)] MiPRINT_FITMODES FitMode);
+	};
+
+	[
+		uuid(0CF31963-5E4D-4772-AE8D-82FE5A082B26),
+		helpstring("_IDocumentEvents Interface")
+	]
+	dispinterface _IDocumentEvents{
+properties:
+methods:
+	[id(0x00000001), helpstring("method OnOCRProgress")]
+	HRESULT OnOCRProgress(
+		[in] int Progress,
+		[in, out] VARIANT_BOOL* Cancel);
+	};
+
+	[
+		uuid(40942A6C-1520-4132-BDF8-BDC1F71F547B),
+		helpstring("Document Class")
+	]
+	coclass Document {
+		[default] interface IDocument;
+		[default, source] dispinterface _IDocumentEvents;
+	};
+
+	[
+		uuid(1AFC4117-128E-4314-9D53-64CBDA5C7E02),
+		helpstring("Layout Class")
+	]
+	coclass Layout {
+		[default] interface ILayout;
+	};
+
+	[
+		uuid(99F3A122-448F-4D36-8243-48BFE32D50B2),
+		helpstring("_IImageEvents Interface")
+	]
+	dispinterface _IImageEvents{
+properties:
+methods:
+	};
+
+	[
+		uuid(56F963EC-6EFC-4A6B-9A1E-5BFE545C89D0),
+		helpstring("Image Class")
+	]
+	coclass Image {
+		[default] interface IImage;
+		[default, source] dispinterface _IImageEvents;
+	};
+
+	[
+		uuid(5995E30F-59EB-42AE-BDCF-8908271C0B32),
+		helpstring("Word Class")
+	]
+	coclass Word {
+		[default] interface IWord;
+	};
+
+	[
+		uuid(C5EAE79B-ACCC-4E51-8ED5-A16F42FB7B1F),
+		helpstring("MiFont Class")
+	]
+	coclass MiFont {
+		[default] interface IMiFont;
+	};
+
+	[
+		uuid(72ACBCE3-9067-4D5E-9539-3497FECD032D),
+		helpstring("Words Class")
+	]
+	coclass Words {
+		[default] interface IWords;
+	};
+
+	[
+		uuid(F961D185-2CC1-43DB-80AB-567FA10251EC),
+		helpstring("Images Class")
+	]
+	coclass Images {
+		[default] interface IImages;
+	};
+
+	[
+		uuid(00607E44-15DF-49BC-AF0C-A9023E060791),
+		helpstring("MiRect Class")
+	]
+	coclass MiRect {
+		[default] interface IMiRect;
+	};
+
+	[
+		uuid(CB2FBD52-56C1-4DD8-897F-961D1543B877),
+		helpstring("MiRects Class")
+	]
+	coclass MiRects {
+		[default] interface IMiRects;
+	};
+
+
+
+
+
+
+
+
+
+
+	[
+		odl,
+		uuid(EA280C3C-E4B7-42BF-ACC8-FE3AD3581638),
+		helpstring("IMiSelectRect Interface"),
+		dual,
+		oleautomation
+	]
+	interface IMiSelectRect : IDispatch {
+		[id(0x00000001), propget, helpstring("property PageNumber")]
+		HRESULT PageNumber([out, retval] long* pVal);
+		[id(0x00000002), propget, helpstring("property Left")]
+		HRESULT Left([out, retval] long* pVal);
+		[id(0x00000003), propget, helpstring("property Top")]
+		HRESULT Top([out, retval] long* pVal);
+		[id(0x00000004), propget, helpstring("property Right")]
+		HRESULT Right([out, retval] long* pVal);
+		[id(0x00000005), propget, helpstring("property Bottom")]
+		HRESULT Bottom([out, retval] long* pVal);
+	};
+
+	[
+		odl,
+		uuid(3A1E1B7A-C041-4DDC-BF3B-042A0B95B82B),
+		helpstring("IMiSelectRects Interface"),
+		dual,
+		oleautomation
+	]
+	interface IMiSelectRects : IDispatch {
+		[id(0x00000001), propget, helpstring("property Count")]
+		HRESULT Count([out, retval] long* pVal);
+		[id(0xfffffffc), propget, helpstring("property _NewEnum")]
+		HRESULT _NewEnum([out, retval] IUnknown** pVal);
+		[id(00000000), propget, helpstring("property Item")]
+		HRESULT Item(
+			[in] long Index,
+			[out, retval] IDispatch** pVal);
+	};
+
+	[
+		odl,
+		uuid(01C4414A-D123-4BC7-A1FA-64E376C01655),
+		helpstring("_INbSelectableItem Interface"),
+		dual,
+		oleautomation
+	]
+	interface IMiSelectableItem : IDispatch {
+		[id(0x00000001), helpstring("CopyToClipboard")]
+		HRESULT CopyToClipboard();
+		[id(0x00000002), propget, helpstring("property text")]
+		HRESULT Text([out, retval] BSTR* p);
+		[id(0x00000003), propget, helpstring("property words")]
+		HRESULT Words([out, retval] IDispatch** ppWords);
+		[id(0x00000004), helpstring("GetSelectRects")]
+		HRESULT GetSelectRects([out, retval] IMiSelectRects** pVal);
+	};
+
+	[
+		odl,
+		uuid(F6379198-3B20-461A-B3A9-191945752557),
+		dual,
+		oleautomation
+	]
+	interface IMiSelectableImage : IDispatch {
+		[id(0x00000001), helpstring("CopyToClipboard")]
+		HRESULT CopyToClipboard(
+			[in, optional, defaultvalue(1)] long CopyAnnotation,
+			[in, optional, defaultvalue(0)] long AlwaysKeepAnnotationColor);
+		[id(0x00000002), helpstring("ExportToPicture")]
+		HRESULT ExportToPicture(
+			[in, optional, defaultvalue(1)] long CopyAnnotation,
+			[in, optional, defaultvalue(0)] long AlwaysKeepAnnotationColor,
+			[out, retval] IPictureDisp** ppiPicture);
+		[id(0x00000003), helpstring("GetBoundingRect")]
+		HRESULT GetBoundingRect(
+			[out] long* plPageNum,
+			[out] long* Left,
+			[out] long* Top,
+			[out] long* Right,
+			[out] long* Bottom);
+	};
+
+	[
+		odl,
+		uuid(8376D508-78CA-416D-A903-2ED62E91E29B),
+		hidden
+	]
+	interface IMiSearchCallback : IUnknown {
+		HRESULT _stdcall IsCancelled([out] long* pfIsCancel);
+	};
+
+
+
+
+	[
+		odl,
+		uuid(F958524A-8422-4B07-B69E-199F2421ED89),
+		helpstring("Microsoft Office Document Imaging Viewer Control"),
+		dual,
+		oleautomation
+	]
+	interface IMiDocView : IDispatch {
+		[id(0x00000001), propget, bindable, requestedit, helpstring("property Document")]
+		HRESULT Document([out, retval] IUnknown** pVal);
+		[id(0x00000001), propput, bindable, requestedit, helpstring("property Document")]
+		HRESULT Document([in] IUnknown* pVal);
+		[id(0x00000002), propget, bindable, requestedit, helpstring("property FileName")]
+		HRESULT FileName([out, retval] BSTR* pVal);
+		[id(0x00000002), propput, bindable, requestedit, helpstring("property FileName")]
+		HRESULT FileName([in] BSTR pVal);
+		[id(0x00000004), propget, bindable, requestedit, helpstring("property NumPages")]
+		HRESULT NumPages([out, retval] long* pVal);
+		[id(0x00000030), helpstring("method ClientToDocument")]
+		HRESULT ClientToDocument(
+			[in, out] long* plX,
+			[in, out] long* plY);
+		[id(0x00000031), helpstring("method DocumentToClient")]
+		HRESULT DocumentToClient(
+			[in, out] long* plX,
+			[in, out] long* plY);
+		[id(0x00000034), helpstring("method ClientToImage")]
+		HRESULT ClientToImage(
+			[in] long lSX,
+			[in] long lSY,
+			[out] long* pnPage,
+			[out] long* plX,
+			[out] long* plY);
+		[id(0x00000035), helpstring("method ImageToClient")]
+		HRESULT ImageToClient(
+			[in] long nPage,
+			[in] long lX,
+			[in] long lY,
+			[out] long* plSX,
+			[out] long* plSY);
+		[id(0x00000032), helpstring("method GetVisibleRect")]
+		HRESULT GetVisibleRect(
+			[out] long* Left,
+			[out] long* Top,
+			[out] long* Right,
+			[out] long* Bottom);
+		[id(0x00000033), helpstring("method MoveRectIntoView")]
+		HRESULT MoveRectIntoView(
+			[in] long Left,
+			[in] long Top,
+			[in] long Right,
+			[in] long Bottom);
+		[id(0x00000017), propget, helpstring("property DocViewMode")]
+		HRESULT DocViewMode([out, retval] MiDocviewMode* pVal);
+		[id(0x00000017), propput, helpstring("property DocViewMode")]
+		HRESULT DocViewMode([in] MiDocviewMode pVal);
+		[id(0x00000003), propget, bindable, requestedit, helpstring("property PageNum")]
+		HRESULT PageNum([out, retval] long* pVal);
+		[id(0x00000003), propput, bindable, requestedit, helpstring("property PageNum")]
+		HRESULT PageNum([in] long pVal);
+		[id(0x00000008), helpstring("method GetScale")]
+		HRESULT GetScale(
+			double* pdScaleX,
+			double* pdScaleY);
+		[id(0x00000009), helpstring("method SetScale")]
+		HRESULT SetScale(
+			double dScaleX,
+			double dScaleY);
+		[id(0x0000000a), propget, bindable, requestedit, helpstring("property FitMode")]
+		HRESULT FitMode([out, retval] MiFITMODE* pVal);
+		[id(0x0000000a), propput, bindable, requestedit, helpstring("property FitMode")]
+		HRESULT FitMode([in] MiFITMODE pVal);
+		[id(0x0000000b), propget, bindable, requestedit, helpstring("property ActionState")]
+		HRESULT ActionState([out, retval] MiActionState* pVal);
+		[id(0x0000000b), propput, bindable, requestedit, helpstring("property ActionState")]
+		HRESULT ActionState([in] MiActionState pVal);
+		[id(0x0000000c), propget, bindable, requestedit, helpstring("property TextSelection")]
+		HRESULT TextSelection([out, retval] IMiSelectableItem** pVal);
+		[id(0x0000000c), propput, bindable, requestedit, helpstring("property TextSelection")]
+		HRESULT TextSelection([in] IMiSelectableItem* pVal);
+		[id(0x0000002f), propget, bindable, requestedit, helpstring("property ImageSelection")]
+		HRESULT ImageSelection([out, retval] IMiSelectableImage** pVal);
+		[id(0x0000002f), propput, bindable, requestedit, helpstring("property ImageSelection")]
+		HRESULT ImageSelection([in] IMiSelectableImage* pVal);
+		[id(0x00000021), helpstring("method SelectAll")]
+		HRESULT SelectAll([in] long nPage);
+		[id(0x0000000d), helpstring("method MoveSelectionToView")]
+		HRESULT MoveSelectionToView(IDispatch* pdispSelection);
+		[id(0x0000001d), propput, bindable, requestedit, helpstring("property LayerVisible")]
+		HRESULT LayerVisible(
+			[in] MiVIEWLAYER Index,
+			[in] VARIANT_BOOL pfVisible);
+		[id(0x0000001d), propget, bindable, requestedit, helpstring("property LayerVisible")]
+		HRESULT LayerVisible(
+			[in] MiVIEWLAYER Index,
+			[out, retval] VARIANT_BOOL* pfVisible);
+	};
+
+	[
+		uuid(9028B775-EC59-4118-862A-EFDEAF5955A4)
+	]
+	dispinterface _IMiDocViewEvents{
+properties:
+methods:
+	[id(0x00000001), helpstring("method FitmodeChanged")]
+	HRESULT FitmodeChanged();
+	[id(0x00000002), helpstring("method ScaleChanged")]
+	HRESULT ScaleChanged();
+	[id(0x00000003), helpstring("method SelectionChanged")]
+	HRESULT SelectionChanged();
+	[id(0x00000004), helpstring("method PageChanged")]
+	HRESULT PageChanged();
+	[id(0x00000005), helpstring("method PageCountChanged")]
+	HRESULT PageCountChanged();
+	[id(0x00000006), helpstring("method CurPageNumChanged")]
+	HRESULT CurPageNumChanged();
+	[id(0x00000007), helpstring("method VisibleRectChanged")]
+	HRESULT VisibleRectChanged();
+	};
+
+	[
+		odl,
+		uuid(BC06ED64-A40C-4FB4-A660-AC6DBC752292),
+		dual,
+		oleautomation
+	]
+	interface IMiDocSearch : IDispatch {
+		[id(0x00000001), helpstring("method Init")]
+		HRESULT Initialize(
+			IUnknown* piDoc,
+			BSTR strPattern,
+			VARIANT* PageNum,
+			VARIANT* WordIndex,
+			VARIANT* StartAfterIndex,
+			VARIANT* Backward,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL MatchMinus,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL MatchFullHalfWidthForm,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL MatchHiraganaKatakana,
+			[in, optional, defaultvalue(-1)] VARIANT_BOOL IgnoreSpace);
+		[id(0x00000002), helpstring("method Search")]
+		HRESULT Search(
+			IMiSearchCallback* pSearchCallback,
+			IMiSelectableItem** ppiSearchResult);
+	};
+
+	[
+		uuid(EF347A62-BA21-42E4-94A0-1C0A6D7FDFE7)
+	]
+	coclass MiDocView {
+		[default] interface IMiDocView;
+		[default, source] dispinterface _IMiDocViewEvents;
+	};
+
+	[
+		uuid(FA554DB9-C806-46A9-AEF8-B5AF891A94F9)
+	]
+	coclass MiDocSearch {
+		[default] interface IMiDocSearch;
+	};
+
+	[
+		uuid(A4D2B51F-809F-4C53-9147-5516871816BD),
+		helpstring("MiSelectRect Class"),
+		noncreatable
+	]
+	coclass MiSelectRect {
+		[default] interface IMiSelectRect;
+	};
+
+	[
+		uuid(23E9E94B-C202-4E9C-8C2E-F53BC536FF1D),
+		helpstring("MiSelectRect Class"),
+		noncreatable
+	]
+	coclass MiSelectRects {
+		[default] interface IMiSelectRects;
+	};
+};

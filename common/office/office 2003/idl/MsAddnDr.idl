@@ -1,0 +1,102 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+// 
+// typelib filename: MSADDNDR.DLL
+
+[
+  uuid(AC0714F2-3D04-11D1-AE7D-00A0C90F26F4),
+  version(1.0),
+  helpstring("Microsoft Add-In Designer")
+]
+library AddInDesignerObjects
+{
+    // TLib :     // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+    importlib("stdole2.tlb");
+
+    // Forward declare all types defined in this typelib
+    interface IAddinDesigner;
+    interface IAddinInstance;
+    interface _IDTExtensibility2;
+
+    typedef [uuid(289E9AF1-4973-11D1-AE81-00A0C90F26F4)]
+    enum {
+        ext_cm_AfterStartup = 0,
+        ext_cm_Startup = 1,
+        ext_cm_External = 2,
+        ext_cm_CommandLine = 3
+    } ext_ConnectMode;
+
+    typedef [uuid(289E9AF2-4973-11D1-AE81-00A0C90F26F4)]
+    enum {
+        ext_dm_HostShutdown = 0,
+        ext_dm_UserClosed = 1
+    } ext_DisconnectMode;
+
+    [
+      odl,
+      uuid(AC0714F3-3D04-11D1-AE7D-00A0C90F26F4),
+      helpstring("Add-In Designer Control"),
+      hidden,
+      dual,
+      oleautomation
+    ]
+    interface IAddinDesigner : IDispatch {
+    };
+
+    [
+      odl,
+      uuid(AC0714F4-3D04-11D1-AE7D-00A0C90F26F4),
+      helpstring("Add-In Instance Object"),
+      hidden,
+      dual,
+      oleautomation
+    ]
+    interface IAddinInstance : IDispatch {
+    };
+
+    [
+      odl,
+      uuid(B65AD801-ABAF-11D0-BB8B-00A0C90F2744),
+      hidden,
+      dual,
+      oleautomation
+    ]
+    interface _IDTExtensibility2 : IDispatch {
+        [id(0x00000001)]
+        HRESULT OnConnection(
+                        [in] IDispatch* Application, 
+                        [in] ext_ConnectMode ConnectMode, 
+                        [in] IDispatch* AddInInst, 
+                        [in] SAFEARRAY(VARIANT)* custom);
+        [id(0x00000002)]
+        HRESULT OnDisconnection(
+                        [in] ext_DisconnectMode RemoveMode, 
+                        [in] SAFEARRAY(VARIANT)* custom);
+        [id(0x00000003)]
+        HRESULT OnAddInsUpdate([in] SAFEARRAY(VARIANT)* custom);
+        [id(0x00000004)]
+        HRESULT OnStartupComplete([in] SAFEARRAY(VARIANT)* custom);
+        [id(0x00000005)]
+        HRESULT OnBeginShutdown([in] SAFEARRAY(VARIANT)* custom);
+    };
+
+    typedef [public]
+    _IDTExtensibility2 IDTExtensibility2;
+
+    [
+      uuid(AC0714F6-3D04-11D1-AE7D-00A0C90F26F4),
+      helpstring("Add-In Designer control")
+    ]
+    coclass AddinDesigner {
+        [default] interface IAddinDesigner;
+        [default, source] interface _IDTExtensibility2;
+    };
+
+    [
+      uuid(AC0714F7-3D04-11D1-AE7D-00A0C90F26F4),
+      helpstring("Add-In Instance Object")
+    ]
+    coclass AddinInstance {
+        [default] interface IAddinInstance;
+        [default, source] interface _IDTExtensibility2;
+    };
+};

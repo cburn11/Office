@@ -1,0 +1,6 @@
+LIBRARY	"OCRPlugin"
+
+EXPORTS
+
+	DllGetClassObject	PRIVATE
+	DllCanUnloadNow		PRIVATE

@@ -1,0 +1,6 @@
+LIBRARY	"ViewerPlugin"
+
+EXPORTS
+
+	DllGetClassObject	PRIVATE
+	DllCanUnloadNow		PRIVATE

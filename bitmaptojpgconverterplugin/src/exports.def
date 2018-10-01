@@ -1,0 +1,6 @@
+LIBRARY	"BitmapToJPGConverterPlugin"
+
+EXPORTS
+	
+		DllGetClassObject	PRIVATE
+		DllCanUnloadNow		PRIVATE

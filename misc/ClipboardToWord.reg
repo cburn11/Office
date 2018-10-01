@@ -1,0 +1,42 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{2867c8f1-7a59-445c-b2d2-77ef58a3ac8d}]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{2867c8f1-7a59-445c-b2d2-77ef58a3ac8d}\LocalServer32]
+@="C:\\Program Files (x86)\\Clifford\\ClipboardToWord.exe"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ClipboardToWord.Application]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\ClipboardToWord.Application\clsid]
+@="{2867c8f1-7a59-445c-b2d2-77ef58a3ac8d}"
+
+[HKEY_CLASSES_ROOT\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}]
+
+[HKEY_CLASSES_ROOT\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}\1.0]
+
+[HKEY_CLASSES_ROOT\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}\1.0\0]
+
+[HKEY_CLASSES_ROOT\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}\1.0\0\win32]
+@="C:\\Program Files (x86)\\Clifford\\ClipboardToWord.tlb"
+
+[HKEY_CLASSES_ROOT\Wow6432Node\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}]
+
+[HKEY_CLASSES_ROOT\Wow6432Node\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}\1.0]
+
+[HKEY_CLASSES_ROOT\Wow6432Node\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}\1.0\0]
+
+[HKEY_CLASSES_ROOT\Wow6432Node\TypeLib\{a2715f71-6d7c-4731-b251-7f4a4668c72b}\1.0\0\win32]
+@="C:\\Program Files (x86)\\Clifford\\ClipboardToWord.tlb"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{f31714c5-e3bf-42e7-ae74-e44c9796d735}]
+@="IID_IApplication"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{f31714c5-e3bf-42e7-ae74-e44c9796d735}\ProxyStubClsid32]
+@="{00020424-0000-0000-c000-000000000046}"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{f31714c5-e3bf-42e7-ae74-e44c9796d735}\ProxyStubClsid]
+@="{00020424-0000-0000-c000-000000000046}"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{f31714c5-e3bf-42e7-ae74-e44c9796d735}\TypeLib]
+@="{a2715f71-6d7c-4731-b251-7f4a4668c72b}"
+Version="1.0"

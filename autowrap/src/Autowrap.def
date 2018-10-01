@@ -1,0 +1,8 @@
+LIBRARY	"Autowrap"
+
+EXPORTS
+	
+	AutowrapInvoke
+	AutowrapNamedInvoke
+	GetDispProperty
+	PutDispProperty

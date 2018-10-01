@@ -1,0 +1,100 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+// 
+// typelib filename: dte100.olb
+
+[
+  uuid(26AD1324-4B7C-44BC-84F8-B86AED45729F),
+  version(10.0),
+  helpstring("Microsoft Development Environment 10.0")
+]
+library EnvDTE100
+{
+    // TLib :     // TLib : Microsoft Development Environment 8.0 : {1A31287A-4D7D-413E-8E32-3B374931BD89}
+    importlib("dte80.olb");
+    // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+    importlib("stdole2.tlb");
+    // TLib : Microsoft Development Environment 9.0 : {2CE2370E-D744-4936-A090-3FFFE667B0E1}
+    importlib("dte90.olb");
+    // TLib : Microsoft Development Environment 8.0 (Version 7.0 Object Model) : {80CC9F66-E7D8-4DDD-85B6-D9E6CD0E93E2}
+    importlib("dte80a.olb");
+    // TLib : Microsoft Development Environment 9.0a : {64A96FE8-CCCF-4EDF-B341-FF7C528B60C9}
+    importlib("dte90a.olb");
+
+    // Forward declare all types defined in this typelib
+    interface Solution4;
+    interface Expression2;
+    interface Debugger5;
+
+    typedef [uuid(2EB6290C-29AA-4609-871F-E22CAB4F68B6), helpstring("Enumeration for add from template method options."), helpcontext(0x0000eebe)]
+    enum {
+        vsAddFromTemplateOptionsNone = 0,
+        vsAddFromTemplateOptionsShowWizardUI = 1,
+        vsAddFromTemplateOptionsLocalSolution = 2,
+        vsAddFromTemplateOptionsDeferredSave = 4,
+        vsAddFromTemplateOptionsMultiProject = 8
+    } vsAddFromTemplateOptions;
+
+    typedef [uuid(6FADEE12-6296-4E8B-A3EF-A6A0DC32F967)]
+    enum {
+        vsDocumentDockAtBeginning = 0,
+        vsDocumentDockAtEnd = 1
+    } vsDocumentDockPreferenceOptions;
+
+    typedef [uuid(C7982CAF-1AFE-4671-858F-D7997D3D8928)]
+    enum {
+        vsRichClientExperienceNone = 0,
+        vsRichClientExperienceAll = 65535,
+        vsRichClientExperienceAnimations = 1,
+        vsRichClientExperienceGradients = 2
+    } vsRichClientExperienceOptions;
+
+    [
+      odl,
+      uuid(CDA7305C-78B6-4D9D-90AD-93EBE71F9341),
+      helpstring("Collection of all projects in the environment; contains many properties of the solution."),
+      helpcontext(0x0000eaa4),
+      dual,
+      oleautomation
+    ]
+    interface Solution4 : Solution3 {
+        [id(0x0000012c)]
+        HRESULT AddFromTemplateEx(
+                        [in] BSTR FileName, 
+                        [in] BSTR Destination, 
+                        [in] BSTR ProjectName, 
+                        [in] BSTR SolutionName, 
+                        [in, optional, defaultvalue(0)] VARIANT_BOOL Exclusive, 
+                        [in, optional, defaultvalue(0)] unsigned long Options, 
+                        [out, retval] Project** IppptReturn);
+    };
+
+    [
+      odl,
+      uuid(F15A2DAD-5C82-4802-BEBC-5431B6ED5557),
+      version(1.0),
+      dual,
+      oleautomation
+    ]
+    interface Expression2 : Expression {
+        [id(0x0000012d)]
+        HRESULT MakeObjectID();
+        [id(0x0000012e)]
+        HRESULT DeleteObjectID();
+    };
+
+    [
+      odl,
+      uuid(C8BBAA3A-7E99-4630-942C-570F085141EB),
+      version(1.0),
+      dual,
+      oleautomation
+    ]
+    interface Debugger5 : Debugger4 {
+        [id(0x00001004)]
+        HRESULT DeleteObjectID([in] BSTR ObjectIDExpression);
+        [id(0x00001005)]
+        HRESULT ExportBreakpoints([in] BSTR FileName);
+        [id(0x00001006)]
+        HRESULT ImportBreakpoints([in] BSTR FileName);
+    };
+};
