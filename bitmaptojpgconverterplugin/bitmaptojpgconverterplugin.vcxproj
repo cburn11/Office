@@ -132,7 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\iunknownmacros .cpp" />
+    <ClCompile Include="..\common\iunknownmacros.cpp" />
     <ClCompile Include="..\idl\generated\ClipboardToWord_i.c" />
     <ClCompile Include="src\BitmapToJPGConverterPlugin.cpp" />
   </ItemGroup>

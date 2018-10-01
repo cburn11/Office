@@ -28,7 +28,7 @@ BOOL UnloadPlugin(void * pCS, const WCHAR * szPath);
 
 #include <vector>
 
-#include "IUnknownMacros.h"
+#include "iunknownmacros.h"
 
 class ConnectableSource;
 

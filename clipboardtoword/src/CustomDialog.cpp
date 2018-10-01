@@ -4,7 +4,7 @@
 #include <string>
 
 #include "resource.h"
-#include "CommonHeaders.h"
+#include "commonheaders.h"
 #include "ConnectableSource.h"
 
 extern "C" void * g_pConnectableSource;

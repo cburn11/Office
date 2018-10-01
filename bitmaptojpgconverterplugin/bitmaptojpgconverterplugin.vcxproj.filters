@@ -21,7 +21,7 @@
     <ClCompile Include="..\idl\generated\ClipboardToWord_i.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\iunknownmacros .cpp">
+    <ClCompile Include="..\common\iunknownmacros.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

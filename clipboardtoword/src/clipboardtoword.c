@@ -13,7 +13,7 @@
 #include "Autowrap.h"
 
 #define ComCtl6
-#include "CommonHeaders.h"
+#include "commonheaders.h"
 
 #include "ClassFactory.h"
 #include "ConnectableSource.h"
