@@ -1,0 +1,14 @@
+﻿  wichelpers.cpp
+c:\users\clifford\source\office\common\wichelpers.cpp(98): warning C4244: 'argument': conversion from 'SIZE_T' to 'UINT', possible loss of data
+c:\users\clifford\source\office\common\wichelpers.cpp(190): warning C4838: conversion from 'UINT' to 'INT' requires a narrowing conversion
+  ContextWindow.cpp
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\winrt\wrl\event.h(316): error C7510: 'Callback': use of dependent template name must be prefixed with 'template'
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\winrt\wrl\event.h(324): error C7510: 'Callback': use of dependent template name must be prefixed with 'template'
+c:\users\clifford\source\office\viewerplugin\src\contextwindow.h(29): fatal error C1083: Cannot open include file: 'windowclass.h': No such file or directory
+  dllmain.cpp
+c:\users\clifford\source\office\viewerplugin\src\dllmain.cpp(4): fatal error C1083: Cannot open include file: 'ClipboardToWord_h.h': No such file or directory
+  ViewerApplication.cpp
+c:\users\clifford\source\office\viewerplugin\src\viewerapplication.h(13): fatal error C1083: Cannot open include file: 'windowclass.h': No such file or directory
+  ViewerPlugin.cpp
+c:\users\clifford\source\office\viewerplugin\src\viewerplugin.h(10): fatal error C1083: Cannot open include file: 'ClipboardToWord_h.h': No such file or directory
+  Generating Code...

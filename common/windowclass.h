@@ -124,6 +124,7 @@ struct ChildWindow : public BasicWindow<T> {
 
 	using BasicWindow<T>::wc;
 	using BasicWindow<T>::m_window;
+	using BasicWindow<T>::szWindowName;
 
 	virtual ~ChildWindow() { DestroyWindow(m_window); }
 
@@ -290,6 +291,8 @@ template <typename T>
 struct ApplicationModelessDialog : public ModelessDialog<T> {
 
 	HACCEL	m_accel = nullptr;
+
+	using ModelessDialog<T>::m_window;
 
 	INT_PTR MessageHandler(UINT const message, WPARAM const wParam, LPARAM const lParam) override {
 

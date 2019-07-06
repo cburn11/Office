@@ -288,6 +288,8 @@ LRESULT ViewerMainWindow::MessageHandler(UINT const message, WPARAM const wParam
 
 		IWICBitmap * pbitmap = nullptr;
 		auto hr = GetBitmapFromClipboard(&pbitmap);
+		for( int tries = 0; hr != S_OK && tries < 100; ++tries, hr = hr = GetBitmapFromClipboard(&pbitmap) )
+			;
 
 		if( S_OK == hr && pbitmap ) {
 

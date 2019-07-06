@@ -6,6 +6,8 @@
 #include "OCRPlugin.h"
 #include "ClipboardToWord_h.h"
 
+#define IDC_BUTTON_MANUALCHECK 1001
+
 extern "C" BOOL InitializeMODI();
 extern "C" CLSID g_clsidDocument;
 extern "C" BOOL PerformOCRonTiff(WCHAR * szPath, UINT * pcchText, WCHAR ** pszText);
@@ -22,9 +24,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
 void Cls_OnSize(HWND hwnd, UINT state, int cx, int cy);
 void Cls_OnDestroy(HWND hwnd);
+void Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
 
 HWND	g_hwndText;
 HWND	g_hwndMain;
+HWND	g_hwndManualCheck;
+
 WCHAR		* g_szClassName = L"ScreenToTiffOCR";
 HINSTANCE	g_hInstance;
 
@@ -69,6 +74,7 @@ OCRPlugin::OCRPlugin() {
 	}
 
 	g_hwndMain = CreateMainWindow();
+	SetWindowLongPtr(g_hwndMain, GWLP_USERDATA, (LONG_PTR) this);
 }
 
 OCRPlugin::~OCRPlugin() {
@@ -80,19 +86,44 @@ OCRPlugin::~OCRPlugin() {
 }
 
 BOOL Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
-	g_hwndText = CreateWindow(L"Edit", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE,
+
+	g_hwndText = CreateWindow(L"Edit", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_READONLY,
 		0, 0, 0, 0, hwnd, NULL, NULL, 0);
 	if( !g_hwndText ) {
 		DWORD error = GetLastError();
 		return error;
 	}
 
+	g_hwndManualCheck = CreateWindow(L"Button", L"&Manual Check Clipboard", WS_CHILD | WS_VISIBLE,
+		0, 0, 0, 0, hwnd, NULL, NULL, 0);
+	if( !g_hwndManualCheck ) {
+		DWORD error = GetLastError();
+		return error;
+	}
+	auto prev = SetWindowLongPtr(g_hwndManualCheck, GWLP_ID, IDC_BUTTON_MANUALCHECK);
+
 	return TRUE;
 }
 
 void Cls_OnSize(HWND hwnd, UINT state, int cx, int cy) {
 
-	MoveWindow(g_hwndText, 5, 5, cx - 10, cy - 10, TRUE);
+	static const UINT padding = 5;
+	static const UINT button_height = 20;
+
+	UINT cx_button = cx - 2 * padding;
+	UINT cy_button = button_height;
+
+	UINT x_text = padding;
+	UINT y_text = padding;
+	UINT cx_text = cx - 2 * padding;
+	UINT cy_text = cy - 3 * padding - cy_button;
+
+	UINT x_button = padding;
+	UINT y_button = 2 * padding + cy_text;
+
+	MoveWindow(g_hwndText, x_text, y_text, cx_text, cy_text, TRUE);
+
+	MoveWindow(g_hwndManualCheck, x_button, y_button, cx_button, cy_button, TRUE);
 
 }
 
@@ -103,6 +134,22 @@ void Cls_OnDestroy(HWND hwnd) {
 
 }
 
+void Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
+
+	switch( id ) {
+
+	case IDC_BUTTON_MANUALCHECK: {
+		
+		OCRPlugin * pPlugin = (OCRPlugin *) GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			
+		HRESULT hr;
+		if( pPlugin )	
+			hr = pPlugin->NewBitmapOnClipboard();
+
+		break; }
+	}
+}
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	switch( message ) {
@@ -110,6 +157,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		HANDLE_MSG(hwnd, WM_CREATE, Cls_OnCreate);
 		HANDLE_MSG(hwnd, WM_SIZE, Cls_OnSize);
 		HANDLE_MSG(hwnd, WM_DESTROY, Cls_OnDestroy);
+		HANDLE_MSG(hwnd, WM_COMMAND, Cls_OnCommand);
 
 	}
 

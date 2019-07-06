@@ -1,0 +1,34 @@
+﻿  iunknownmacros.cpp
+  ConnectableSource.cpp
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(113): warning C4311: '<function-style-cast>': pointer truncation from 'IConnectionPointContainer *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(113): warning C4302: '<function-style-cast>': truncation from 'IConnectionPointContainer *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(114): warning C4311: '<function-style-cast>': pointer truncation from 'IEnumConnectionPoints *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(114): warning C4302: '<function-style-cast>': truncation from 'IEnumConnectionPoints *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(246): error C2664: 'HRESULT AutoInvoke(const GUID &,const IID &,int,VARIANT *,IDispatch *,OLECHAR *,int,...)': cannot convert argument 6 from 'const wchar_t [16]' to 'OLECHAR *'
+  c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(247): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(253): error C2664: 'HRESULT AutoInvoke(const GUID &,const IID &,int,VARIANT *,IDispatch *,OLECHAR *,int,...)': cannot convert argument 6 from 'const wchar_t [21]' to 'OLECHAR *'
+  c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(254): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(266): error C2664: 'HRESULT AutoInvoke(const GUID &,const IID &,int,VARIANT *,IDispatch *,OLECHAR *,int,...)': cannot convert argument 6 from 'const wchar_t [22]' to 'OLECHAR *'
+  c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(267): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(277): error C2664: 'HRESULT AutoInvoke(const GUID &,const IID &,int,VARIANT *,IDispatch *,OLECHAR *,int,...)': cannot convert argument 6 from 'const wchar_t [5]' to 'OLECHAR *'
+  c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(278): note: Conversion from string literal loses const qualifier (see /Zc:strictStrings)
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(301): error C2664: 'HMODULE LoadLibraryA(LPCSTR)': cannot convert argument 1 from 'const _Elem *' to 'LPCSTR'
+          with
+          [
+              _Elem=wchar_t
+          ]
+  c:\users\clifford\source\office\clipboardtoword\src\connectablesource.cpp(301): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+  CustomDialog.cpp
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(113): warning C4311: '<function-style-cast>': pointer truncation from 'IConnectionPointContainer *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(113): warning C4302: '<function-style-cast>': truncation from 'IConnectionPointContainer *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(114): warning C4311: '<function-style-cast>': pointer truncation from 'IEnumConnectionPoints *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\connectablesource.h(114): warning C4302: '<function-style-cast>': truncation from 'IEnumConnectionPoints *' to 'DWORD'
+c:\users\clifford\source\office\clipboardtoword\src\customdialog.cpp(90): error C2664: 'int GetWindowTextA(HWND,LPSTR,int)': cannot convert argument 2 from 'WCHAR *' to 'LPSTR'
+  c:\users\clifford\source\office\clipboardtoword\src\customdialog.cpp(90): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+c:\users\clifford\source\office\clipboardtoword\src\customdialog.cpp(100): error C2664: 'int MessageBoxA(HWND,LPCSTR,LPCSTR,UINT)': cannot convert argument 2 from 'const _Elem *' to 'LPCSTR'
+          with
+          [
+              _Elem=wchar_t
+          ]
+  c:\users\clifford\source\office\clipboardtoword\src\customdialog.cpp(100): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+  Generating Code...

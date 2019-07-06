@@ -1,0 +1,11 @@
+﻿  hash.c
+c:\users\clifford\source\office\hash\src\hash.c(8): warning C4273: 'hash': inconsistent dll linkage
+  c:\users\clifford\source\office\hash\src\hash.h(11): note: see previous definition of 'hash'
+c:\users\clifford\source\office\hash\src\hash.c(23): warning C4273: 'InitMultiHash': inconsistent dll linkage
+  c:\users\clifford\source\office\hash\src\hash.h(23): note: see previous definition of 'InitMultiHash'
+c:\users\clifford\source\office\hash\src\hash.c(56): warning C4273: 'MultiHash': inconsistent dll linkage
+  c:\users\clifford\source\office\hash\src\hash.h(24): note: see previous definition of 'MultiHash'
+c:\users\clifford\source\office\hash\src\hash.c(63): warning C4273: 'FinishMultiHash': inconsistent dll linkage
+  c:\users\clifford\source\office\hash\src\hash.h(25): note: see previous definition of 'FinishMultiHash'
+     Creating library C:\Users\Clifford\source\Office\x64\Debug\hash.lib and object C:\Users\Clifford\source\Office\x64\Debug\hash.exp
+LINK : fatal error LNK1561: entry point must be defined
