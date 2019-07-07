@@ -86,7 +86,16 @@
     </ClCompile>
     <Midl>
       <OutputDirectory>generated</OutputDirectory>
-      <TypeLibraryName>$(IntDir)ClipboardToWord.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)build\$(Configuration)\ClipboardToWord.tlb</TypeLibraryName>
+      <GenerateClientFiles>Stub</GenerateClientFiles>
+      <GenerateServerFiles>Stub</GenerateServerFiles>
+      <ProxyFileName>
+      </ProxyFileName>
+      <DllDataFileName>DllData.c</DllDataFileName>
+      <ClientStubFile>
+      </ClientStubFile>
+      <ServerStubFile>
+      </ServerStubFile>
     </Midl>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,7 +121,12 @@
     </Link>
     <Midl>
       <OutputDirectory>generated</OutputDirectory>
-      <TypeLibraryName>$(IntDir)ClipboardToWord.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)build\$(Configuration)\ClipboardToWord.tlb</TypeLibraryName>
+      <GenerateClientFiles>Stub</GenerateClientFiles>
+      <GenerateServerFiles>Stub</GenerateServerFiles>
+      <ProxyFileName>
+      </ProxyFileName>
+      <DllDataFileName>DllData.c</DllDataFileName>
     </Midl>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

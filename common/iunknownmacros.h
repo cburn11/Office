@@ -66,6 +66,8 @@ struct AUTO_LONG {
 	STDMETHODIMP GetIDsOfNames(REFIID, LPOLESTR *, UINT, LCID, DISPID *) { return E_NOTIMPL; } \
 	STDMETHODIMP Invoke(DISPID, REFIID, LCID, WORD, DISPPARAMS *, VARIANT *, EXCEPINFO *, UINT *) { return E_NOTIMPL; }
 
+
+
 #endif //	__cplusplus
 
 #endif //	__IUnknownMacro_Header

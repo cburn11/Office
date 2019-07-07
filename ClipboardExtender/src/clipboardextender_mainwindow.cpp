@@ -12,8 +12,6 @@
 #include "clipboardextender.h"
 #include "resource.h"
 
-#pragma comment(lib, "autowrap.lib")
-
 ClipboardExtenderMainWindow::ClipboardExtenderMainWindow() {
 
 	intrnlRegisterClass();
@@ -36,12 +34,9 @@ ClipboardExtenderMainWindow::~ClipboardExtenderMainWindow() {
 		m_pCP->Release();
 	}
 
-	if( m_pClipboardDispatch ) {
+	if( m_pCBApplication ) {
 
-		VARIANT varResult;
-
-		hr = AutowrapInvoke(DISPATCH_METHOD, &varResult, m_pClipboardDispatch, L"Quit", 0);
-		m_pClipboardDispatch->Release();
+		hr = m_pCBApplication->Quit();
 	}
 
 }
@@ -91,7 +86,7 @@ void ClipboardExtenderMainWindow::LoadClipboardToWordApplication() {
 
 	HRESULT hr = OleInitialize(NULL);
 
-	hr = CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER, IID_PPV_ARGS(&m_pClipboardDispatch));
+	hr = CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER, IID_PPV_ARGS(&m_pCBApplication));
 
 	if( hr != S_OK ) {
 		
@@ -101,9 +96,10 @@ void ClipboardExtenderMainWindow::LoadClipboardToWordApplication() {
 		throw std::exception{ ss.str().c_str() };
 	}
 
+
 	// Attach to Events;
 
-	CComQIPtr<IConnectionPointContainer> pCPC{ m_pClipboardDispatch };
+	CComQIPtr<IConnectionPointContainer> pCPC{ m_pCBApplication };
 	if( !pCPC )			throw std::exception{ "Error attaching to ClipboardToWord" };
 
 	hr = pCPC->FindConnectionPoint(IID_IClipboardEvents, &m_pCP);
