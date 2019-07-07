@@ -88,6 +88,7 @@ private:
 
 	void intrnlRegisterClass();
 	void intrnlCreateWindow();
+	void intrnlLoadAccellorators();
 
 	void LoadEventSink();
 	void LoadClipboardToWordApplication();

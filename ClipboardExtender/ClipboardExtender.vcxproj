@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\clipboardextender.h" />
+    <ClInclude Include="src\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\iunknownmacros.cpp" />
@@ -27,6 +28,9 @@
     <ClCompile Include="src\ClipboardEventsSink.cpp" />
     <ClCompile Include="src\clipboardextender_mainwindow.cpp" />
     <ClCompile Include="src\clipboardextender_app.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\ClipboardExtender.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -10,6 +10,7 @@
 #include <ClipboardToWord_h.h>
 
 #include "clipboardextender.h"
+#include "resource.h"
 
 #pragma comment(lib, "autowrap.lib")
 
@@ -17,6 +18,7 @@ ClipboardExtenderMainWindow::ClipboardExtenderMainWindow() {
 
 	intrnlRegisterClass();
 	intrnlCreateWindow();
+	intrnlLoadAccellorators();
 
 	LoadEventSink();
 
@@ -41,6 +43,7 @@ ClipboardExtenderMainWindow::~ClipboardExtenderMainWindow() {
 		hr = AutowrapInvoke(DISPATCH_METHOD, &varResult, m_pClipboardDispatch, L"Quit", 0);
 		m_pClipboardDispatch->Release();
 	}
+
 }
 
 void ClipboardExtenderMainWindow::intrnlRegisterClass() {
@@ -72,6 +75,11 @@ void ClipboardExtenderMainWindow::intrnlCreateWindow() {
 		throw std::exception{ strError.c_str() };
 	}
 
+}
+
+void ClipboardExtenderMainWindow::intrnlLoadAccellorators() {
+
+	m_accel = LoadAccelerators(wc.hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR_MAIN));
 }
 
 void ClipboardExtenderMainWindow::LoadEventSink() {
@@ -158,10 +166,12 @@ void ClipboardExtenderMainWindow::Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl,
 
 	switch( id ) {
 
+	case ID_ACC_COPY:
 	case ID_BUTTON_COPY:
 		CopyAllToClipboad();
 		break;
 
+	case ID_ACC_RESET:
 	case ID_BUTTON_RESET:
 		ResetListBox();
 		break;

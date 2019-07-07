@@ -18,6 +18,9 @@
     <ClInclude Include="src\clipboardextender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\clipboardextender_app.cpp">
@@ -35,5 +38,10 @@
     <ClCompile Include="..\common\iunknownmacros.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\ClipboardExtender.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
