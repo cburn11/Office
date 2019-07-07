@@ -14,7 +14,7 @@ class BasicWindow {
 public:
 
 	WNDCLASS wc{ 0 };
-	WCHAR * szWindowName = nullptr;
+	const WCHAR * szWindowName = nullptr;
 
     HWND	m_window = nullptr;
 

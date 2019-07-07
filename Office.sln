@@ -39,6 +39,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bitmaptojpgconverterplugin"
 		{6350EB4C-088D-45FC-96A7-079B78C1A2F0} = {6350EB4C-088D-45FC-96A7-079B78C1A2F0}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClipboardExtender", "ClipboardExtender\ClipboardExtender.vcxproj", "{8872628A-27D1-483E-84DF-8990F4E4805F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6350EB4C-088D-45FC-96A7-079B78C1A2F0} = {6350EB4C-088D-45FC-96A7-079B78C1A2F0}
+		{3743D2B6-F13B-42FF-86D2-93C50DDBBC34} = {3743D2B6-F13B-42FF-86D2-93C50DDBBC34}
+		{F99C82BD-987E-456B-8DFF-6D04F8EDF310} = {F99C82BD-987E-456B-8DFF-6D04F8EDF310}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -111,6 +118,14 @@ Global
 		{D5A48C73-B044-46B9-AA8B-55521DC2EA92}.Release|x64.Build.0 = Release|x64
 		{D5A48C73-B044-46B9-AA8B-55521DC2EA92}.Release|x86.ActiveCfg = Release|Win32
 		{D5A48C73-B044-46B9-AA8B-55521DC2EA92}.Release|x86.Build.0 = Release|Win32
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Debug|x64.ActiveCfg = Debug|x64
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Debug|x64.Build.0 = Debug|x64
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Debug|x86.ActiveCfg = Debug|Win32
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Debug|x86.Build.0 = Debug|Win32
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Release|x64.ActiveCfg = Release|x64
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Release|x64.Build.0 = Release|x64
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Release|x86.ActiveCfg = Release|Win32
+		{8872628A-27D1-483E-84DF-8990F4E4805F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
