@@ -73,8 +73,7 @@ private:
 
 	IClipboardEvents *		m_pEvents = nullptr;
 
-	IApplication *			m_pCBApplication = nullptr;
-	IConnectionPoint *		m_pCP = nullptr;
+	CComPtr<IApplication>	m_pCBApplication;
 	
 	DWORD					m_cookie = 0; 
 

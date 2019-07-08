@@ -28,12 +28,6 @@ ClipboardExtenderMainWindow::~ClipboardExtenderMainWindow() {
 	
 	HRESULT hr;
 
-	if( m_pCP && m_cookie > 0) {
-
-		hr = m_pCP->Unadvise(m_cookie);
-		m_pCP->Release();
-	}
-
 	if( m_pCBApplication ) {
 
 		hr = m_pCBApplication->Quit();
@@ -86,7 +80,8 @@ void ClipboardExtenderMainWindow::LoadClipboardToWordApplication() {
 
 	HRESULT hr = OleInitialize(NULL);
 
-	hr = CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER, IID_PPV_ARGS(&m_pCBApplication));
+	//hr = CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER, IID_PPV_ARGS(&m_pCBApplication));
+	hr = m_pCBApplication.CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER);
 
 	if( hr != S_OK ) {
 		
@@ -96,17 +91,9 @@ void ClipboardExtenderMainWindow::LoadClipboardToWordApplication() {
 		throw std::exception{ ss.str().c_str() };
 	}
 
-
 	// Attach to Events;
 
-	CComQIPtr<IConnectionPointContainer> pCPC{ m_pCBApplication };
-	if( !pCPC )			throw std::exception{ "Error attaching to ClipboardToWord" };
-
-	hr = pCPC->FindConnectionPoint(IID_IClipboardEvents, &m_pCP);
-	if( S_OK != hr )	throw std::exception{ "Error attaching to ClipboardToWord" };
-
-	hr = m_pCP->Advise((IUnknown *) m_pEvents, &m_cookie);
-	if( S_OK != hr )	throw std::exception{ "Error attaching to ClipboardToWord" };
+	hr = m_pCBApplication.Advise((IUnknown *) m_pEvents, IID_IClipboardEvents, &m_cookie);
 
 }
 
