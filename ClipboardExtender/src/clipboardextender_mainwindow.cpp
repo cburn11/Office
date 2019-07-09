@@ -12,7 +12,38 @@
 #include "clipboardextender.h"
 #include "resource.h"
 
+LRESULT CALLBACK CustomListBoxProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	static WNDPROC procListBox = nullptr;
+
+	switch( message ) {
+	
+	case WM_NCCREATE: {
+
+		WNDCLASS wc;
+		GetClassInfo(NULL, L"ListBox", &wc);
+		procListBox = wc.lpfnWndProc;
+
+		break; }
+
+	case WM_KEYDOWN: {
+
+		LRESULT ret = CallWindowProc(procListBox, hwnd, message, wParam, lParam);
+
+		ULONG vkKey = (ULONG) wParam;
+		if( vkKey == VK_DELETE )	PostMessage(GetParent(hwnd), message, wParam, lParam);
+
+		return ret;
+	}
+
+	}
+
+	return CallWindowProc(procListBox, hwnd, message, wParam, lParam);
+}
+
 ClipboardExtenderMainWindow::ClipboardExtenderMainWindow() {
+
+	InitCustomListBox();
 
 	intrnlRegisterClass();
 	intrnlCreateWindow();
@@ -21,6 +52,7 @@ ClipboardExtenderMainWindow::ClipboardExtenderMainWindow() {
 	LoadEventSink();
 
 	LoadClipboardToWordApplication();
+
 
 }
 
@@ -32,7 +64,6 @@ ClipboardExtenderMainWindow::~ClipboardExtenderMainWindow() {
 
 		hr = m_pCBApplication->Quit();
 	}
-
 }
 
 void ClipboardExtenderMainWindow::intrnlRegisterClass() {
@@ -80,7 +111,6 @@ void ClipboardExtenderMainWindow::LoadClipboardToWordApplication() {
 
 	HRESULT hr = OleInitialize(NULL);
 
-	//hr = CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER, IID_PPV_ARGS(&m_pCBApplication));
 	hr = m_pCBApplication.CoCreateInstance(CLSID_Application, nullptr, CLSCTX_SERVER);
 
 	if( hr != S_OK ) {
@@ -94,7 +124,17 @@ void ClipboardExtenderMainWindow::LoadClipboardToWordApplication() {
 	// Attach to Events;
 
 	hr = m_pCBApplication.Advise((IUnknown *) m_pEvents, IID_IClipboardEvents, &m_cookie);
+}
 
+void ClipboardExtenderMainWindow::InitCustomListBox() {
+
+	WNDCLASS wc;
+	GetClassInfo(NULL, L"ListBox", &wc);
+
+	wc.lpszClassName = L"CB_CustomListBox";
+	wc.lpfnWndProc = CustomListBoxProc;
+
+	RegisterClass(&wc);
 }
 
 LRESULT ClipboardExtenderMainWindow::MessageHandler(UINT const message, WPARAM const wParam, LPARAM const lParam) {
@@ -106,6 +146,7 @@ LRESULT ClipboardExtenderMainWindow::MessageHandler(UINT const message, WPARAM c
 		HANDLE_MSG(m_window, WM_CREATE, Cls_OnCreate);
 		HANDLE_MSG(m_window, WM_SIZE, Cls_OnSize);
 		HANDLE_MSG(m_window, WM_COMMAND, Cls_OnCommand);
+		HANDLE_MSG(m_window, WM_KEYDOWN, Cls_OnKey);
 
 	case CE_CLIPBOARDEVENT:
 		res = 0;
@@ -122,7 +163,7 @@ LRESULT ClipboardExtenderMainWindow::MessageHandler(UINT const message, WPARAM c
 
 BOOL ClipboardExtenderMainWindow::Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
 
-	m_hwndListBox = CreateWindow(L"ListBox", L"hwndString", WS_CHILD | WS_VISIBLE | WS_BORDER,
+	m_hwndListBox = CreateWindow(L"CB_CustomListBox", L"hwndString", WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL,
 		0, 0, 0, 0, hwnd, NULL, NULL, 0);
 
 	m_hwndButtonCopyAll = CreateWindow(L"Button", L"&Copy All", WS_CHILD | WS_VISIBLE,
@@ -158,6 +199,18 @@ void ClipboardExtenderMainWindow::Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl,
 	case ID_BUTTON_RESET:
 		ResetListBox();
 		break;
+	}
+
+}
+
+void ClipboardExtenderMainWindow::Cls_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags) {
+
+	switch( vk ) {
+
+	case VK_DELETE:
+		DeleteSelectedString();
+		break;
+
 	}
 
 }
@@ -252,4 +305,21 @@ void ClipboardExtenderMainWindow::SaveText(const std::wstring& text) {
 	ListBox_AddString(m_hwndListBox, text.c_str());
 
 	m_strings.push_back(text);
+}
+
+void ClipboardExtenderMainWindow::DeleteSelectedString() {
+
+	int sel = ListBox_GetCurSel(m_hwndListBox);
+
+	if( sel < 0 )		return;
+	
+	ListBox_DeleteString(m_hwndListBox, sel);
+
+	m_strings.erase(std::begin(m_strings) + sel);
+
+	int count = ListBox_GetCount(m_hwndListBox);
+
+	sel = min(sel, count - 1);
+
+	ListBox_SetCurSel(m_hwndListBox, sel);
 }

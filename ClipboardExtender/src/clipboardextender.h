@@ -85,15 +85,19 @@ private:
 
 	bool					m_fCopyEvent = false;
 
+	WNDPROC					m_procListBox;
+
 	void intrnlRegisterClass();
 	void intrnlCreateWindow();
 	void intrnlLoadAccellorators();
 
 	void LoadEventSink();
 	void LoadClipboardToWordApplication();
+	void InitCustomListBox();
 
 	void ResetListBox();
 	void SaveText(const std::wstring& text);
+	void DeleteSelectedString();
 
 	std::wstring GetClipboardText();
 	void CopyAllToClipboad();
@@ -102,6 +106,8 @@ private:
 
 	void Cls_OnSize(HWND hwnd, UINT state, int cx, int cy);
 	void Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
+	void Cls_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags);
 	void Cls_OnClipboardUpdate(HWND hwnd);
+
 };
 
