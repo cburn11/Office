@@ -7,6 +7,8 @@
 #include <utility>
 #include <memory>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
 #include <d2d1.h>
 #include <d2d1helper.h>
@@ -464,9 +466,13 @@ std::wstring ViewerMainWindow::GetDatePrefix() {
 	auto t = time(nullptr);
 	auto local_time = localtime(&t);
 
-	std::wstring prefix = std::to_wstring(local_time->tm_mon) + std::to_wstring(local_time->tm_mday) + std::to_wstring(local_time->tm_year);
+	std::wstringstream ss;
 
-	return prefix;
+	ss << std::to_wstring(local_time->tm_year + 1900) << L"-";
+	ss << std::setw(2) << std::setfill(L'0') << std::to_wstring(local_time->tm_mon + 1) << L"-";
+	ss << std::setw(2) << std::setfill(L'0') << std::to_wstring(local_time->tm_mday);
+
+	return ss.str();
 }
 
 void ViewerMainWindow::SaveAllBitmapsAs() {
@@ -509,7 +515,7 @@ void ViewerMainWindow::SaveAllBitmaps() {
 
 	for( int i = 0; i < size; ++i ) {
 		
-		swprintf_s(szsavepath, L"%s\\%s_%.3d", m_savepath.c_str(), m_prefix.c_str(), 
+		swprintf_s(szsavepath, L"%s\\%s-%.3d", m_savepath.c_str(), m_prefix.c_str(), 
 			i + (m_fOverwrite ? 0 : m_offsetSaveIndex));
 
 		SaveBitmapToFile(i, szsavepath);
@@ -809,8 +815,9 @@ UINT ViewerMainWindow::GetOffsetFromPath(const WCHAR * szPath) {
 
 	CComQIPtr<FolderItems3> pFolderItems3{ pFolderItems };
 	if( pFolderItems3 ) {
-		CComBSTR filter{ L"*.jpg" };
-		hr = pFolderItems3->Filter(0x40, filter);
+		std::wstring filter = m_prefix + L"-*.jpg";
+		CComBSTR bstrFilter{ filter.c_str() };
+		hr = pFolderItems3->Filter(0x40, bstrFilter);
 	}
 
 	long count;
@@ -820,7 +827,9 @@ UINT ViewerMainWindow::GetOffsetFromPath(const WCHAR * szPath) {
 
 	if( count == 0 )		return count;
 
-	/*for( int index = 0; index < count; ++index ) {
+	UINT max = count;
+
+	for( int index = 0; index < count; ++index ) {
 		CComVariant varIndex{ index };
 		CComPtr<FolderItem> pFolderItem;
 		hr = pFolderItems->Item(varIndex, &pFolderItem);
@@ -828,12 +837,15 @@ UINT ViewerMainWindow::GetOffsetFromPath(const WCHAR * szPath) {
 		CComBSTR bstrName;
 		hr = pFolderItem->get_Name(&bstrName);
 		if( S_OK != hr ) continue;
-		std::wstring out = bstrName;
-		out += L"\n";
-		OutputDebugString(out.c_str());
-	}*/
+		std::wstring name = bstrName;
+		auto pdash = name.find_last_of(L'-') + 1;
+		auto pperiod = name.find_last_of(L'.');
+		std::wstring number{ name.begin() + pdash, name.begin() + pperiod };
+		auto num = _wtoi(number.c_str());
+		if( num > max )	max = num;
+	}
 
-	return count + 1;
+	return max;
 }
 
 void ViewerMainWindow::UpdateOffset() {

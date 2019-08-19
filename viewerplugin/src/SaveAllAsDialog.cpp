@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <windowsx.h>
 
+#include <CommCtrl.h>
+#define ComCtl6
 #include <commonheaders.h>
 
 #include <string>
@@ -40,11 +42,14 @@ BOOL SaveAllAsDialog::Cls_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 	m_hwndNoOverwrite = GetDlgItem(hwnd, IDC_CHECK_SAVEALLAS_OVERWRITE);
 	m_hwndUseDate = GetDlgItem(hwnd, IDC_CHECK_SAVEALLAS_DATE);
 	m_hwndPrefix = GetDlgItem(hwnd, IDC_EDIT_SAVEALLAS_PREFIX);
+	m_hwndUpDown = GetDlgItem(hwnd, IDC_SPIN_SAVEALLAS_INDEX);
 
 	SyncSaveSettings();
 
 	ToggleNoOverwrite(true);
 	ToggleUseDate(true);
+
+	SendMessage(m_hwndUpDown, UDM_SETBUDDY, (WPARAM) m_hwndIndex, 0);
 
 	return TRUE;
 }

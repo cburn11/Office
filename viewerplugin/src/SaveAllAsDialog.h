@@ -43,6 +43,7 @@ private:
 	HWND m_hwndNoOverwrite;
 	HWND m_hwndUseDate;
 	HWND m_hwndPrefix;
+	HWND m_hwndUpDown;
 
 	void Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
 
