@@ -4,6 +4,10 @@
 
 #include <ctime>
 
+#include <utility>
+#include <memory>
+#include <string>
+
 #include <d2d1.h>
 #include <d2d1helper.h>
 #pragma comment(lib, "d2d1.lib")
@@ -13,8 +17,6 @@
 
 #include "ViewerApplication.h"
 #include "wichelpers.h"
-
-
 
 ViewerMainWindow::ViewerMainWindow() {
 
@@ -43,9 +45,13 @@ ViewerMainWindow::ViewerMainWindow() {
 		UpdateWindow(m_window);
 	}
 
-	const WCHAR * buttons[] = { L"Save", L"Save as ...", L"Save all", L"Delete", L"Delete all"};
+	const WCHAR * buttons[] = { L"Save", L"Save as ...", L"Save all", L"Save all as ...", L"Delete", L"Delete all"};
 	m_pcontextwindow = 
 		std::make_unique<ContextWindow>(hwnd, 150, side + 2 * padding, IDC_CONTEXTMENU, buttons);
+
+	m_prefix = GetDatePrefix();
+
+	HRESULT hr = CoCreateInstance(CLSID_Shell, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pShell));
 }
 
 ViewerMainWindow::~ViewerMainWindow() {
@@ -279,6 +285,7 @@ LRESULT ViewerMainWindow::MessageHandler(UINT const message, WPARAM const wParam
 		HANDLE_MSG(m_window, WM_RBUTTONDOWN, Cls_OnRButtonDown);
 		HANDLE_MSG(m_window, WM_MOUSEWHEEL, Cls_OnMouseWheel);
 		HANDLE_MSG(m_window, WM_MOVE, Cls_OnMove);
+		HANDLE_MSG(m_window, WM_SAVEALLASDIALOG_ACTION, Cls_OnSaveAllAsDialogAction);
 
 	case WM_SETAPPLICATION:
 		m_pApplication = (IApplication *) lParam;
@@ -311,7 +318,7 @@ LRESULT ViewerMainWindow::MessageHandler(UINT const message, WPARAM const wParam
 
 	case WM_SETSAVEDIR:
 
-		m_savepath = (BSTR) lParam;
+		SetSaveDir((const WCHAR *) lParam);
 
 	case WM_CONTEXTACTION: {
 
@@ -332,6 +339,10 @@ LRESULT ViewerMainWindow::MessageHandler(UINT const message, WPARAM const wParam
 		} else if( action == L"Save all" ) {
 
 			SaveAllBitmaps();
+
+		} else if( action == L"Save all as ..." ) {
+
+			SaveAllBitmapsAs();
 
 		} else if( action == L"Delete all" ) {
 
@@ -448,24 +459,63 @@ void ViewerMainWindow::Cls_OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UI
 	}
 }
 
-void ViewerMainWindow::SaveAllBitmaps() {
-
-	static WCHAR szsavepath[MAX_PATH]{ 0 };
-
-	auto size = m_bitmaps.size();
+std::wstring ViewerMainWindow::GetDatePrefix() {
 
 	auto t = time(nullptr);
 	auto local_time = localtime(&t);
+
+	std::wstring prefix = std::to_wstring(local_time->tm_mon) + std::to_wstring(local_time->tm_mday) + std::to_wstring(local_time->tm_year);
+
+	return prefix;
+}
+
+void ViewerMainWindow::SaveAllBitmapsAs() {
+
+	// Needs to launch the SaveAllAsDialog
+	// which will return a pointer to a std::pair<std::wstring, UINT>
+	// where the string is the prefix and the int is the offset.
+
+	// If the dialog changes the current save path, the dialog
+	// will send a WM_SETSAVEDIR message to the Viewer window
+	// prior to exiting.
 	
-	wstring base_name = std::to_wstring(local_time->tm_mon) + std::to_wstring(local_time->tm_mday) +
-		std::to_wstring(local_time->tm_year);		
+	std::unique_ptr<SaveAllAsDialog> psaveallasdialog = std::make_unique<SaveAllAsDialog>(m_window);
+	auto pPair = ( std::pair<std::wstring, UINT> * ) psaveallasdialog->ShowDialogBox(m_window);
+
+	if( pPair ) {
+		m_prefix = pPair->first;
+		m_offsetSaveIndex = pPair->second;
+		delete pPair;
+	} else {
+
+		return;
+	}
+
+	if( m_savepath == L"" || m_savepath.size() < 1 ) return;
+
+	SaveAllBitmaps();
+}
+
+void ViewerMainWindow::SaveAllBitmaps() {
+
+	WCHAR szsavepath[MAX_PATH]{ 0 };
+
+	if( m_savepath.size() < 1 ) {
+		SaveAllBitmapsAs();
+		return;
+	}
+
+	auto size = m_bitmaps.size();
 
 	for( int i = 0; i < size; ++i ) {
 		
-		swprintf_s(szsavepath, L"%s%s_%.3d", m_savepath.c_str(), base_name.c_str(), i);
+		swprintf_s(szsavepath, L"%s\\%s_%.3d", m_savepath.c_str(), m_prefix.c_str(), 
+			i + (m_fOverwrite ? 0 : m_offsetSaveIndex));
 
 		SaveBitmapToFile(i, szsavepath);
 	}
+
+	UpdateOffset();
 }
 
 void ViewerMainWindow::SaveBitmapToFile(UINT index, const WCHAR * szPath) {
@@ -496,7 +546,7 @@ void ViewerMainWindow::SaveBitmapToFile(UINT index, const WCHAR * szPath) {
 	SaveWICBitmapAsJPG(m_pWICFactory, tempfilepath.c_str(), pwicbitmap);
 }
 
-bool ViewerMainWindow::GetFilepath(const WCHAR ** pszFilepath) {
+bool ViewerMainWindow::GetFilepath(const WCHAR ** pszFilepath, bool fDir) {
 
 	WCHAR			* szFilename = nullptr;
 	OPENFILENAME	ofn = { sizeof(ofn), 0 };
@@ -511,15 +561,20 @@ bool ViewerMainWindow::GetFilepath(const WCHAR ** pszFilepath) {
 	ofn.lpstrFile = szFilename;
 	ofn.nMaxFile = sizeof(WCHAR) * MAX_PATH;
 
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.Flags = OFN_PATHMUSTEXIST;
+	if( !fDir )	ofn.Flags |= OFN_FILEMUSTEXIST;
 
 	DWORD error;
 	BOOL ret;
 
 	ofn.lpstrInitialDir = m_savepath.c_str();
-	ofn.lpstrFilter = L"jpg\0*.jpg\0";
-	ofn.nFileExtension = 1;
-	ret = GetSaveFileName(&ofn);
+	if( !fDir ) {
+		ofn.lpstrFilter = L"jpg\0*.jpg\0";
+		ofn.nFileExtension = 1;
+	}
+
+	ret = fDir ? GetOpenFileName(&ofn) :
+		GetSaveFileName(&ofn);
 
 	if( ret ) {		
 
@@ -648,4 +703,140 @@ void ViewerMainWindow::RemoveAllBitmaps() {
 	}
 
 	Render();
+}
+
+INT_PTR ViewerMainWindow::Cls_OnSaveAllAsDialogAction(HWND hwnd, int action, LPARAM lParam) {
+
+	switch( action ) {
+
+	case ACTION_GETCURSAVEDIR:
+
+		return (INT_PTR) m_savepath.c_str();
+
+	case ACTION_SETCURSAVEDIR:
+
+		SetSaveDir((const WCHAR *) lParam);
+
+		break;
+
+	case ACTION_SHOWBROWSEDIALOG: {
+
+		std::wstring path = BrowseForSaveFolder();
+
+		// Delete by caller
+		auto pPath = new WCHAR[path.size() + 1]{ 0 };
+		if( pPath )	wcscpy(pPath, path.c_str());
+		return (INT_PTR) pPath;
+	}
+
+	case ACTION_GETCUROFFSET:
+
+		return (INT_PTR) m_offsetSaveIndex;
+
+	case ACTION_GETCURPREFIX:
+
+		return (INT_PTR) m_prefix.c_str();
+	}
+
+	return NULL;
+}
+
+void ViewerMainWindow::SetSaveDir(const WCHAR * szPath) {
+
+	if( !szPath )				return;
+
+	if( m_savepath == szPath )	return;
+
+	m_savepath = szPath;
+
+	UpdateOffset();
+}
+
+std::wstring ViewerMainWindow::BrowseForSaveFolder() {
+
+	std::wstring save_folder;
+
+	VARIANT varError; varError.vt = VT_ERROR;
+
+	CComPtr<Folder> pFolder;
+	HRESULT hr = m_pShell->BrowseForFolder((long) m_window, SysAllocString(L"Select Save Directory"),
+		BIF_USENEWUI, varError, &pFolder);
+
+	if( S_OK != hr )	return L"";
+
+	save_folder = GetPathFromFolder(pFolder);
+
+	return save_folder;
+}
+
+std::wstring ViewerMainWindow::GetPathFromFolder(Folder * pFolder) {
+
+	CComBSTR bstrTitle;
+	HRESULT hr = pFolder->get_Title(&bstrTitle);
+
+	CComPtr<Folder> pParent;
+	hr = pFolder->get_ParentFolder(&pParent);
+
+	if( S_OK != hr )	return L"";
+
+	CComPtr<FolderItem> pFolderItem;
+	hr = pParent->ParseName(bstrTitle, &pFolderItem);
+
+	if( S_OK != hr )	return L"";
+
+	CComBSTR bstrPath;
+	hr = pFolderItem->get_Path(&bstrPath);
+
+	if( S_OK != hr )	return L"";
+
+	return std::wstring{ bstrPath };
+}
+
+UINT ViewerMainWindow::GetOffsetFromPath(const WCHAR * szPath) {
+
+	if( !szPath )				return -1;
+
+	CComPtr<Folder> pFolder;
+	CComVariant varDir{ szPath };
+	HRESULT hr = m_pShell->NameSpace(varDir, &pFolder);
+
+	if( S_OK != hr )			return -1;
+
+	CComPtr<FolderItems> pFolderItems;
+	hr = pFolder->Items(&pFolderItems);
+
+	if( S_OK != hr )			return -1;
+
+	CComQIPtr<FolderItems3> pFolderItems3{ pFolderItems };
+	if( pFolderItems3 ) {
+		CComBSTR filter{ L"*.jpg" };
+		hr = pFolderItems3->Filter(0x40, filter);
+	}
+
+	long count;
+	hr = pFolderItems->get_Count(&count);
+
+	if( S_OK != hr )		return -1;
+
+	if( count == 0 )		return count;
+
+	/*for( int index = 0; index < count; ++index ) {
+		CComVariant varIndex{ index };
+		CComPtr<FolderItem> pFolderItem;
+		hr = pFolderItems->Item(varIndex, &pFolderItem);
+		if( S_OK != hr ) continue;
+		CComBSTR bstrName;
+		hr = pFolderItem->get_Name(&bstrName);
+		if( S_OK != hr ) continue;
+		std::wstring out = bstrName;
+		out += L"\n";
+		OutputDebugString(out.c_str());
+	}*/
+
+	return count + 1;
+}
+
+void ViewerMainWindow::UpdateOffset() {
+
+	m_offsetSaveIndex = GetOffsetFromPath(m_savepath.c_str());
 }

@@ -138,16 +138,22 @@
     <ClCompile Include="..\idl\generated\ClipboardToWord_i.c" />
     <ClCompile Include="src\ContextWindow.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\SaveAllAsDialog.cpp" />
     <ClCompile Include="src\ViewerApplication.cpp" />
     <ClCompile Include="src\ViewerPlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ContextWindow.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\SaveAllAsDialog.h" />
     <ClInclude Include="src\ViewerApplication.h" />
     <ClInclude Include="src\ViewerPlugin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\ViewerPlugin_exports.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\viewerplugin.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -222,7 +222,10 @@ void ClipboardExtenderMainWindow::Cls_OnClipboardUpdate(HWND hwnd) {
 		return;
 	}
 
-	auto text = this->GetClipboardText();
+	std::wstring text;
+	while( ( text = GetClipboardText() ) == L"" )
+		Sleep(100);
+	
 	
 	SaveText(text);
 }
@@ -305,6 +308,9 @@ void ClipboardExtenderMainWindow::SaveText(const std::wstring& text) {
 	ListBox_AddString(m_hwndListBox, text.c_str());
 
 	m_strings.push_back(text);
+
+	int last = ListBox_GetCount(m_hwndListBox) - 1;
+	ListBox_SetTopIndex(m_hwndListBox, last);
 }
 
 void ClipboardExtenderMainWindow::DeleteSelectedString() {

@@ -3,6 +3,11 @@
 #include <Windows.h>
 #include <wincodec.h>
 
+#include <ShlDisp.h>
+#include <ShlObj.h>
+#include <ShlObj_core.h>
+#include <atlcomcli.h>
+
 #include <d2d1.h>
 #include <d2d1helper.h>
 
@@ -13,6 +18,7 @@
 #include "windowclass.h"
 #include "contextwindow.h"
 #include "ClipboardToWord_h.h"
+#include "SaveAllAsDialog.h"
 
 #define WM_SETAPPLICATION	(WM_USER + 10)
 #define WM_NEWBITMAP		(WM_USER + 11)
@@ -34,6 +40,8 @@ class ViewerMainWindow : public ChildWindow<ViewerMainWindow> {
 
 	IApplication * m_pApplication = nullptr;
 
+	CComPtr<IShellDispatch> m_pShell;
+
 	std::vector<IWICBitmap *>	m_bitmaps;
 	std::vector<ID2D1Bitmap *>	m_bitmapcache;
 
@@ -41,9 +49,12 @@ class ViewerMainWindow : public ChildWindow<ViewerMainWindow> {
 	int m_contextBitmap = -1;
 	int m_base = 0;
 
-	std::wstring m_savepath{ L"c:\\temp\\pics\\" };
+	std::wstring	m_savepath;
+	std::wstring	m_prefix;
+	UINT			m_offsetSaveIndex;
+	bool			m_fOverwrite = false;
 
-	std::unique_ptr<ContextWindow> m_pcontextwindow;
+	std::unique_ptr<ContextWindow>		m_pcontextwindow;
 	
 	void Cls_OnDestroy(HWND hwnd);
 	void Cls_OnPaint(HWND hwnd);
@@ -54,6 +65,8 @@ class ViewerMainWindow : public ChildWindow<ViewerMainWindow> {
 	void Cls_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags);
 	void Cls_OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fwKeys);
 	void Cls_OnMove(HWND hwnd, int x, int y);
+	
+	INT_PTR Cls_OnSaveAllAsDialogAction(HWND hwnd, int action, LPARAM lParam);
 
 	BOOL Cls_OnEraseBkgnd(HWND hwnd, HDC hdc);
 
@@ -65,10 +78,11 @@ class ViewerMainWindow : public ChildWindow<ViewerMainWindow> {
 	void Render();
 	void DiscardDeviceResources();
 
-	bool GetFilepath(const WCHAR ** pszFilepath);
+	bool GetFilepath(const WCHAR ** pszFilepath, bool fDir = false);
 	void SaveBitmapToFile(UINT index, const WCHAR * szPath);
 	void SaveBitmapToFileAs(UINT index);
 	void SaveAllBitmaps();
+	void SaveAllBitmapsAs();
 
 	void ScrollDown();
 	void ScrollUp();
@@ -79,6 +93,17 @@ class ViewerMainWindow : public ChildWindow<ViewerMainWindow> {
 
 	void RemoveBitmap(int index, bool fRender = true);
 	void RemoveAllBitmaps();
+
+	void SetSaveDir(const WCHAR * szPath);
+
+	std::wstring GetDatePrefix();
+
+	std::wstring BrowseForSaveFolder();
+
+	std::wstring GetPathFromFolder(Folder * pFolder);
+
+	UINT GetOffsetFromPath(const WCHAR * szPath);
+	void UpdateOffset();
 
 public:
 
