@@ -41,6 +41,7 @@ class ViewerMainWindow : public ChildWindow<ViewerMainWindow> {
 	IApplication * m_pApplication = nullptr;
 
 	CComPtr<IShellDispatch> m_pShell;
+	CComPtr<IFileDialog>	m_pFileDialog;
 
 	std::vector<IWICBitmap *>	m_bitmaps;
 	std::vector<ID2D1Bitmap *>	m_bitmapcache;

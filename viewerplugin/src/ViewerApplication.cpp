@@ -54,6 +54,8 @@ ViewerMainWindow::ViewerMainWindow() {
 	m_prefix = GetDatePrefix();
 
 	HRESULT hr = CoCreateInstance(CLSID_Shell, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pShell));
+
+	hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pFileDialog));
 }
 
 ViewerMainWindow::~ViewerMainWindow() {
@@ -762,22 +764,45 @@ std::wstring ViewerMainWindow::BrowseForSaveFolder() {
 
 	std::wstring save_folder;
 
-	VARIANT varError; varError.vt = VT_ERROR;
+	if( !m_pFileDialog ) {
+		
+		VARIANT varError; varError.vt = VT_ERROR;
 
-	CComPtr<Folder> pFolder;
-	HRESULT hr = m_pShell->BrowseForFolder((long) m_window, SysAllocString(L"Select Save Directory"),
-		BIF_USENEWUI, varError, &pFolder);
+		CComPtr<Folder> pFolder;
+		HRESULT hr = m_pShell->BrowseForFolder((long) m_window, SysAllocString(L"Select Save Directory"),
+			BIF_USENEWUI, varError, &pFolder);
 
-	if( S_OK != hr )	return L"";
+		if( S_OK != hr )	return L"";
 
-	save_folder = GetPathFromFolder(pFolder);
+		save_folder = GetPathFromFolder(pFolder);
+
+	} else {
+
+		HRESULT hr = m_pFileDialog->SetOptions(FOS_PICKFOLDERS);
+
+		hr = m_pFileDialog->Show(m_window);
+
+		if( S_OK != hr )	return L"";
+
+		CComPtr<IShellItem> pShellItem;
+		hr = m_pFileDialog->GetResult(&pShellItem);
+
+		if( S_OK != hr )	return L"";
+
+		BSTR	bstrDisplayName;
+		hr = pShellItem->GetDisplayName(SIGDN_FILESYSPATH, &bstrDisplayName);
+			   		 	
+		if( S_OK != hr )	return L"";
+
+		save_folder = bstrDisplayName;
+	}
 
 	return save_folder;
 }
 
 std::wstring ViewerMainWindow::GetPathFromFolder(Folder * pFolder) {
 
-	CComBSTR bstrTitle;
+	BSTR bstrTitle;
 	HRESULT hr = pFolder->get_Title(&bstrTitle);
 
 	CComPtr<Folder> pParent;
@@ -790,7 +815,7 @@ std::wstring ViewerMainWindow::GetPathFromFolder(Folder * pFolder) {
 
 	if( S_OK != hr )	return L"";
 
-	CComBSTR bstrPath;
+	BSTR bstrPath;
 	hr = pFolderItem->get_Path(&bstrPath);
 
 	if( S_OK != hr )	return L"";
@@ -834,7 +859,7 @@ UINT ViewerMainWindow::GetOffsetFromPath(const WCHAR * szPath) {
 		CComPtr<FolderItem> pFolderItem;
 		hr = pFolderItems->Item(varIndex, &pFolderItem);
 		if( S_OK != hr ) continue;
-		CComBSTR bstrName;
+		BSTR bstrName;
 		hr = pFolderItem->get_Name(&bstrName);
 		if( S_OK != hr ) continue;
 		std::wstring name = bstrName;
