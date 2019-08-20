@@ -49,7 +49,12 @@ private:
 
 	BOOL Cls_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
 
+	LRESULT Cls_OnNotify(HWND hwnd, int id, NMHDR * pNMHDR);
+
 	void SyncSaveSettings();
+	void ReadSettings();
+
+	std::wstring GetEditValue(HWND hwndEdit);
 
 	void SetSavePath(const WCHAR * szSavePath);
 	void SetPrefix(const WCHAR * szPrefix);

@@ -24,6 +24,7 @@ INT_PTR SaveAllAsDialog::MessageHandler(UINT const message, WPARAM const wParam,
 	switch( message ) {
 
 		HANDLE_DLG_MSG(m_window, WM_INITDIALOG, Cls_OnInitDialog);
+		HANDLE_DLG_MSG(m_window, WM_NOTIFY, Cls_OnNotify);
 
 		HANDLE_DLG_MSG_DERIVED(m_window, WM_COMMAND, Cls_OnCommand, __super::MessageHandler(message, wParam, lParam));
 
@@ -84,7 +85,39 @@ void SaveAllAsDialog::Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNo
 		}
 
 		break;
+
+	case IDC_CHECK_SAVEALLAS_DATE: {
+
+		auto checked = Button_GetCheck(m_hwndUseDate);
+		ToggleUseDate(checked == 0 ? false : true);
+
+		break; }
+
+	case IDC_CHECK_SAVEALLAS_OVERWRITE: {
+
+		auto checked = Button_GetCheck(m_hwndNoOverwrite);
+		ToggleNoOverwrite(checked == 0 ? false : true);
+
+		break; }
 	}
+}
+
+LRESULT SaveAllAsDialog::Cls_OnNotify(HWND hwnd, int id, NMHDR * pNMHDR) {
+
+	switch( id ) {
+
+	case IDC_SPIN_SAVEALLAS_INDEX: {
+		NMUPDOWN * pnmud = (NMUPDOWN *) pNMHDR;
+		pnmud->iDelta *= -1;
+
+		if( pnmud->iPos < 0 )	pnmud->iPos = 0;
+
+		return 0;
+	}
+
+	}
+
+	return 1;
 }
 
 void SaveAllAsDialog::SyncSaveSettings() {
@@ -132,6 +165,7 @@ void SaveAllAsDialog::ToggleUseDate(bool fUseDate) {
 
 void SaveAllAsDialog::OK_Action() {
 
+	ReadSettings();
 
 	auto pPair = new std::pair<std::wstring, UINT>{m_prefix, m_minIndex};
 
@@ -154,4 +188,24 @@ void SaveAllAsDialog::SetPrefix(const WCHAR * szPrefix) {
 	m_prefix = szPrefix;
 
 	Edit_SetText(m_hwndPrefix, szPrefix);
+}
+
+void SaveAllAsDialog::ReadSettings() {
+
+	m_prefix = GetEditValue(m_hwndPrefix);
+
+	m_minIndex = _wtoi(GetEditValue(m_hwndIndex).c_str());
+}
+
+std::wstring SaveAllAsDialog::GetEditValue(HWND hwndEdit) {
+
+	int cch = Edit_GetTextLength(hwndEdit);
+
+	std::unique_ptr<WCHAR> szText{ ( WCHAR * ) new WCHAR[cch + 1]{0} };
+
+	if( !szText )	return L"";
+
+	Edit_GetText(hwndEdit, szText.get(), cch + 1);
+
+	return std::wstring{ szText.get() };
 }
