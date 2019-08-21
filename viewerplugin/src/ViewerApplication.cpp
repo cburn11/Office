@@ -16,6 +16,7 @@
 
 #include <atlcomcli.h>
 #include <atltypes.h>
+#include <atlbase.h>
 
 #include "ViewerApplication.h"
 #include "wichelpers.h"
@@ -789,12 +790,12 @@ std::wstring ViewerMainWindow::BrowseForSaveFolder() {
 
 		if( S_OK != hr )	return L"";
 
-		BSTR	bstrDisplayName;
-		hr = pShellItem->GetDisplayName(SIGDN_FILESYSPATH, &bstrDisplayName);
+		CComHeapPtr<WCHAR> szDisplayName;
+		hr = pShellItem->GetDisplayName(SIGDN_FILESYSPATH, &szDisplayName);
 			   		 	
 		if( S_OK != hr )	return L"";
 
-		save_folder = bstrDisplayName;
+		save_folder = szDisplayName;		
 	}
 
 	return save_folder;
@@ -802,16 +803,27 @@ std::wstring ViewerMainWindow::BrowseForSaveFolder() {
 
 std::wstring ViewerMainWindow::GetPathFromFolder(Folder * pFolder) {
 
-	BSTR bstrTitle;
-	HRESULT hr = pFolder->get_Title(&bstrTitle);
-
-	CComPtr<Folder> pParent;
-	hr = pFolder->get_ParentFolder(&pParent);
-
-	if( S_OK != hr )	return L"";
+	HRESULT hr;
+	
+	CComQIPtr<Folder2> pFolder2{ pFolder };
 
 	CComPtr<FolderItem> pFolderItem;
-	hr = pParent->ParseName(bstrTitle, &pFolderItem);
+	if( pFolder2 ) {
+
+		hr = pFolder2->get_Self(&pFolderItem);
+
+	} else {
+
+		BSTR bstrTitle;
+		hr = pFolder->get_Title(&bstrTitle);
+
+		CComPtr<Folder> pParent;
+		hr = pFolder->get_ParentFolder(&pParent);
+
+		if( S_OK != hr )	return L"";
+
+		hr = pParent->ParseName(bstrTitle, &pFolderItem);
+	}
 
 	if( S_OK != hr )	return L"";
 
