@@ -216,6 +216,8 @@ void ClipboardExtenderMainWindow::Cls_OnKey(HWND hwnd, UINT vk, BOOL fDown, int 
 }
 
 void ClipboardExtenderMainWindow::Cls_OnClipboardUpdate(HWND hwnd) {
+	
+	UINT iterations = 0;
 
 	if( m_fCopyEvent ) {
 		m_fCopyEvent = false;
@@ -223,9 +225,9 @@ void ClipboardExtenderMainWindow::Cls_OnClipboardUpdate(HWND hwnd) {
 	}
 
 	std::wstring text;
-	while( ( text = GetClipboardText() ) == L"" )
+	while( ( text = GetClipboardText() ) == L"" && ++iterations < 10 ) {
 		Sleep(100);
-	
+	}	
 	
 	SaveText(text);
 }
@@ -299,12 +301,11 @@ void ClipboardExtenderMainWindow::CopyAllToClipboad() {
 
 void ClipboardExtenderMainWindow::SaveText(const std::wstring& text) {
 
-	if( m_strings.size() > 0 ) {
+	if( text == L"" )			return;
 
-		const auto& last_text = *( m_strings.end() - 1 );
-		if( last_text == text )		return;
-	}
-
+	const auto& last_text = *( m_strings.end() - 1 );
+	if( last_text == text )		return;
+	
 	ListBox_AddString(m_hwndListBox, text.c_str());
 
 	m_strings.push_back(text);
