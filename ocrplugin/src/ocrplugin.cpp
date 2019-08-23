@@ -3,6 +3,8 @@
 #include <wincodec.h>
 #include <atlcomcli.h>
 
+#include <string>
+
 #include "OCRPlugin.h"
 #include "ClipboardToWord_h.h"
 
@@ -32,6 +34,8 @@ HWND	g_hwndManualCheck;
 
 WCHAR		* g_szClassName = L"ScreenToTiffOCR";
 HINSTANCE	g_hInstance;
+
+IApplication * m_pApplication;
 
 HWND CreateMainWindow() {
 	DWORD error;
@@ -75,6 +79,8 @@ OCRPlugin::OCRPlugin() {
 
 	g_hwndMain = CreateMainWindow();
 	SetWindowLongPtr(g_hwndMain, GWLP_USERDATA, (LONG_PTR) this);
+
+	HRESULT hr = CoCreateInstance(CLSID_Application, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pApplication));
 }
 
 OCRPlugin::~OCRPlugin() {
@@ -83,6 +89,7 @@ OCRPlugin::~OCRPlugin() {
 
 	if( g_hwndMain )	DestroyWindow(g_hwndMain);
 
+	if( m_pApplication )	m_pApplication->Release();
 }
 
 BOOL Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
@@ -132,6 +139,11 @@ void Cls_OnDestroy(HWND hwnd) {
 	g_hwndMain = NULL;
 	g_hwndText = NULL;
 
+	if( m_pApplication ) {
+		m_pApplication->Quit();
+		m_pApplication->Release();
+		m_pApplication = nullptr;
+	}
 }
 
 void Cls_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
@@ -180,11 +192,11 @@ STDMETHODIMP OCRPlugin::SetProperty(BSTR propertyname, BSTR propertyvalue, VARIA
 
 STDMETHODIMP OCRPlugin::ClipboardUpdate() {
 
-
 	return S_OK;
 }
 
 STDMETHODIMP OCRPlugin::NewBitmapOnClipboard() {
+
 
 	BOOL	fOpenCB;
 	DWORD	error;
@@ -230,13 +242,23 @@ STDMETHODIMP OCRPlugin::NewBitmapOnClipboard() {
 
 		Edit_SetText(g_hwndText, szText);
 		
-	} 
+	} else {
+
+		FLASHWINFO fw = { sizeof(fw), 0 };
+		fw.dwFlags = FLASHW_ALL;
+		fw.uCount = 3;
+		fw.hwnd = g_hwndMain;
+		FlashWindowEx(&fw);
+
+	}
 
 	if( szText) CoTaskMemFree(szText);
 	if( pBuffer ) { CoTaskMemFree(pBuffer); }
 	DeleteFile(szTempFilePath);
 
 	if( fOpenCB )CloseClipboard();
+
+
 
 	return S_OK;
 }

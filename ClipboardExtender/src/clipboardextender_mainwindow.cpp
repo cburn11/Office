@@ -303,8 +303,12 @@ void ClipboardExtenderMainWindow::SaveText(const std::wstring& text) {
 
 	if( text == L"" )			return;
 
-	const auto& last_text = *( m_strings.end() - 1 );
-	if( last_text == text )		return;
+	if( m_strings.size() > 0 ) {
+
+		const auto& last_text = *( m_strings.end() - 1 );
+		if( last_text == text )		return;
+
+	}
 	
 	ListBox_AddString(m_hwndListBox, text.c_str());
 

@@ -225,32 +225,33 @@ BOOL GetBitmapBitsFromClipboard(BYTE ** ppBuffer, UINT * pcbBuffer, BITMAPINFOHE
 	BYTE		* pBuffer;
 	int			cbWritten;
 
-	if( OpenClipboard(g_hwnd) ) {
+	if( !OpenClipboard(g_hwnd) ) {
 
-		hbm = (HBITMAP) GetClipboardData(CF_BITMAP);
-		cbWritten = GetObject(hbm, sizeof(bm), &bm);
-		cbBuffer = bm.bmHeight * bm.bmPlanes * bm.bmWidthBytes;
-		pBuffer = (BYTE *) calloc(cbBuffer, sizeof(BYTE));
-		cbWritten = GetBitmapBits(hbm, cbBuffer, pBuffer);
-		CloseClipboard();
-		if( pHeader ) {
-			pHeader->biBitCount = bm.bmBitsPixel;
-			pHeader->biHeight = bm.bmHeight;
-			pHeader->biPlanes = bm.bmPlanes;
-			pHeader->biSize = sizeof(BITMAPINFOHEADER);
-			pHeader->biSizeImage = 0;
-			pHeader->biWidth = bm.bmWidth;
-		}
-		*ppBuffer = pBuffer;
-		*pcbBuffer = cbBuffer;
+		*ppBuffer = NULL;
+		*pcbBuffer = 0;
 
-		return TRUE;
+		return FALSE;
 	}
 
-	*ppBuffer = NULL;
-	*pcbBuffer = 0;
+	hbm = (HBITMAP) GetClipboardData(CF_BITMAP);
+	cbWritten = GetObject(hbm, sizeof(bm), &bm);
+	cbBuffer = bm.bmHeight * bm.bmPlanes * bm.bmWidthBytes;
+	pBuffer = (BYTE *) calloc(cbBuffer, sizeof(BYTE));
+	cbWritten = GetBitmapBits(hbm, cbBuffer, pBuffer);
+	CloseClipboard();
+	if( pHeader ) {
+		pHeader->biBitCount = bm.bmBitsPixel;
+		pHeader->biHeight = bm.bmHeight;
+		pHeader->biPlanes = bm.bmPlanes;
+		pHeader->biSize = sizeof(BITMAPINFOHEADER);
+		pHeader->biSizeImage = 0;
+		pHeader->biWidth = bm.bmWidth;
+	}
 
-	return FALSE;
+	*ppBuffer = pBuffer;
+	*pcbBuffer = cbBuffer;
+
+	return TRUE;	
 }
 
 BOOL IsNewBitmapOnClipboard() {
@@ -258,22 +259,34 @@ BOOL IsNewBitmapOnClipboard() {
 	BYTE	* pBuffer, * pHash;
 	UINT	cbBuffer, cbHash;
 
-	if( GetBitmapBitsFromClipboard(&pBuffer, &cbBuffer, NULL) ) {
-		int cmp;
+	BOOL fGet = FALSE;
+	UINT cAttempts = 0;
 
-		hash(L"MD5", pBuffer, cbBuffer, &pHash, (DWORD *) &cbHash);
-
-		free(pBuffer);
-
-		cmp = memcmp(pHash, g_prevhash, cbHash);
-
-		memcpy(g_prevhash, pHash, CB_BUFFER);
-
-		free(pHash);
-
-		if( 0 == cmp )
-			return FALSE;
+	while( !( fGet = GetBitmapBitsFromClipboard(&pBuffer, &cbBuffer, NULL) ) ) {
+		Sleep(10);
+		cAttempts++;
+		if( cAttempts >= 10 )
+			break;
 	}
+
+	if( !fGet )
+		return fGet;
+
+	int cmp;
+
+	hash(L"MD5", pBuffer, cbBuffer, &pHash, (DWORD *) &cbHash);
+
+	free(pBuffer);
+
+	cmp = memcmp(pHash, g_prevhash, cbHash);
+
+	memcpy(g_prevhash, pHash, CB_BUFFER);
+
+	free(pHash);
+
+	if( 0 == cmp )
+		return FALSE;
+	
 
 	return TRUE;
 }
@@ -813,40 +826,49 @@ void CustomHandler() {
 
 	if( fBitmapOnClipboard ) {
 
-		if( IsNewBitmapOnClipboard() ) {
+		if( !IsNewBitmapOnClipboard() )		
+			return;
 
-			ULONG		cbBuffer;
-			BYTE		* pBuffer = NULL;
-			if( GetBitmapFromClipboard(&pBuffer, &cbBuffer) ) {
+		ULONG		cbBuffer = 0, cAttempts = 0;
+		BYTE		* pBuffer = NULL;
+		BOOL		fGet = FALSE;
+		
+		while( ! (fGet = GetBitmapFromClipboard(&pBuffer, &cbBuffer)) ) {
+			++cAttempts;
+			Sleep(10);
+			if( cAttempts >= 10 )
+				break;
+		}
 
-				// Send NewBitmapOnClipboard event
-				// NOT 64 bit compatible!
-				if( g_pConnectableSource ) {
-					LARGE_INTEGER li = { cbBuffer, pBuffer };
-					TriggerEvent(g_pConnectableSource, &IID_IClipboardEvents, EVENT_CODE_NEWBITMAP, &li);
-				}
+		if( !fGet )
+			return;
 
-				HANDLE		hTempFile = NULL;
-				WCHAR		* szTempFilePath = NULL;
-				if( GetTempFile(&hTempFile, &szTempFilePath) ) {
+		// Send NewBitmapOnClipboard event
+		// NOT 64 bit compatible!
+		if( g_pConnectableSource ) {
+			LARGE_INTEGER li = { cbBuffer, pBuffer };
+			TriggerEvent(g_pConnectableSource, &IID_IClipboardEvents, EVENT_CODE_NEWBITMAP, &li);
+		}
 
-					if( SaveBitmapToTempFile(hTempFile, pBuffer, cbBuffer) ) {
-						if( hTempFile ) { CloseHandle(hTempFile); hTempFile = NULL; }
+		HANDLE		hTempFile = NULL;
+		WCHAR		* szTempFilePath = NULL;
+		if( GetTempFile(&hTempFile, &szTempFilePath) ) {
 
-						//	Send BitmapSavedToTempFile event
-						if( g_pConnectableSource )	
-							TriggerEvent(g_pConnectableSource, &IID_IClipboardEvents, 
-								EVENT_CODE_BITMAPSAVED, szTempFilePath);
+			if( SaveBitmapToTempFile(hTempFile, pBuffer, cbBuffer) ) {
+				if( hTempFile ) { CloseHandle(hTempFile); hTempFile = NULL; }
 
-					}
-				}
-
-				if( szTempFilePath ) { DeleteFile(szTempFilePath); free(szTempFilePath); }
+				//	Send BitmapSavedToTempFile event
+				if( g_pConnectableSource )	
+					TriggerEvent(g_pConnectableSource, &IID_IClipboardEvents, 
+						EVENT_CODE_BITMAPSAVED, szTempFilePath);
 
 			}
-
-			if( pBuffer )	free(pBuffer);
 		}
+
+		if( szTempFilePath ) { DeleteFile(szTempFilePath); free(szTempFilePath); }
+
+	if( pBuffer )	free(pBuffer);
+		
 	}
 }
 
