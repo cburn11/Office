@@ -1,7 +1,6 @@
-﻿  iunknownmacros.cpp
-  ClipboardEventsSink.cpp
-  clipboardextender_mainwindow.cpp
+﻿  ClipboardEventsSink.cpp
   clipboardextender_app.cpp
+  clipboardextender_mainwindow.cpp
   Generating Code...
   ClipboardToWord_i.c
   ClipboardExtender.vcxproj -> C:\Users\Clifford\source\Office\build\Debug\ClipboardExtender.exe

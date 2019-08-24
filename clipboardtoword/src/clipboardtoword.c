@@ -5,6 +5,7 @@
 #include <WindowsX.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "resource.h"
@@ -68,6 +69,8 @@ BOOL			g_fNoWord;
 
 WCHAR			* g_szPath = NULL;
 int				g_SaveFormat = -1;
+
+long			* g_plGuard;
 
 INT_PTR CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -497,6 +500,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, WCHAR * szCmdL
 		}		
 	}
 
+	g_plGuard = (long *) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(long));
+	*g_plGuard = 0;
+
 	hr = OleInitialize(NULL);
 
 	g_pConnectableSource = CreateConnectableSource();
@@ -826,11 +832,8 @@ void CustomHandler() {
 
 	if( fBitmapOnClipboard ) {
 
-		if( !IsNewBitmapOnClipboard() )		
-			return;
-
-		ULONG		cbBuffer = 0, cAttempts = 0;
-		BYTE		* pBuffer = NULL;
+		ULONG		cbBuffer = 0, cAttempts = 0, cbHash = 0;
+		BYTE		* pBuffer = NULL, * pHash = NULL;
 		BOOL		fGet = FALSE;
 		
 		while( ! (fGet = GetBitmapFromClipboard(&pBuffer, &cbBuffer)) ) {
@@ -842,6 +845,50 @@ void CustomHandler() {
 
 		if( !fGet )
 			return;
+
+		hash(L"MD5", pBuffer, cbBuffer, &pHash, &cbHash);
+		if( !pHash )
+			return;
+
+		int cmp = memcmp(g_prevhash, pHash, cbHash);
+
+		if( cmp == 0 ) {
+
+			free(pHash);
+			return;
+		}
+
+#ifdef _DEBUG
+		{
+			SIZE_T buffer_size = 2 * cbHash + 1;
+			char * pcharHash = (char *) calloc(buffer_size, sizeof(char));
+			char * pcharPrevHash = (char *) calloc(buffer_size, sizeof(char));
+
+			if( pcharPrevHash && pcharHash ) {
+
+				for( int i = 0; i < cbHash; ++i ) {
+
+					sprintf_s(pcharHash + 2 * i, buffer_size, "%.2x", *( pHash + i ));
+					sprintf_s(pcharPrevHash + 2 * i, buffer_size, "%.2x", *( g_prevhash + i ));
+
+					
+				}
+
+				OutputDebugStringA("Current hash:\t");
+				OutputDebugStringA(pcharHash);
+				OutputDebugStringA("\n");
+				OutputDebugStringA("Prev hash:\t\t");
+				OutputDebugStringA(pcharPrevHash);
+				OutputDebugStringA("\n\n");
+			}
+
+			//if( pcharHash )		free(pcharHash);
+			//if( pcharPrevHash )	free(pcharPrevHash);
+		}
+#endif
+
+		memcpy(g_prevhash, pHash, cbHash);
+		free(pHash);
 
 		// Send NewBitmapOnClipboard event
 		// NOT 64 bit compatible!
@@ -873,6 +920,11 @@ void CustomHandler() {
 }
 
 void Cls_OnClipboardUpdate(HWND hwnd) {		
+	
+	if( InterlockedIncrement(g_plGuard) > 1 ) {
+		InterlockedDecrement(g_plGuard);
+		return;
+	}
 
 	switch( g_paste ) {
 
@@ -895,4 +947,6 @@ void Cls_OnClipboardUpdate(HWND hwnd) {
 	}
 
 	if( !g_fNoWord ) UpdatePageCount();
+
+	InterlockedDecrement(g_plGuard);
 }

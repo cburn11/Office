@@ -58,15 +58,14 @@ STDMETHODIMP ViewerPlugin::SetProperty(BSTR propertyname, BSTR propertyvalue, VA
 }
 
 STDMETHODIMP ViewerPlugin::ClipboardUpdate() {
-
-	PostMessage(m_pmainwindow->m_window, WM_NEWBITMAP, 0, 0);
-
+	
 	return S_OK;
 }
 
 STDMETHODIMP ViewerPlugin::NewBitmapOnClipboard() {
 	
-
+	PostMessage(m_pmainwindow->m_window, WM_NEWBITMAP, 0, 0);
+	
 	return S_OK;
 }
 
